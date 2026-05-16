@@ -1,0 +1,1 @@
+Gears shown in the first frame rotate in a physically plausible way. Each gear's centers are fixed at the initial locations while they are rotating in a physically valid way.

@@ -140,8 +140,8 @@ DATASET_DESCRIPTIONS = {
     <div>
     <p>
         In this work, we explore the capabilities of state-of-the-art video generative models built on Diffusion Transformers (DiTs) to simulate and design mechanical systems, using 2D gear systems as a testbed. 
-        We evaluate off-the-shelf commercial video models<sup>*</sup> on their ability to generate plausible gear interactions via first-frame conditioned video generation (I2V) tasks. 
-        While these models demonstrate remarkable visual fidelity, they struggle to synthesize animations that adhere to basic kinematic constraints, resulting in meshed gears with conflicting rotational directions and mismatched angular velocities.
+        To start with, we first examine off-the-shelf commercial video generative models<sup>*</sup> on their ability to generate plausible gear interactions via first-frame conditioned video generation (I2V) tasks. 
+        As shown below, while these models demonstrate remarkable visual fidelity, they struggle to adhere to basic kinematic constraints, resulting in meshed gears with conflicting rotational directions and mismatched angular velocities.
     </p>
     
     <p style="margin-top: 1em;">
