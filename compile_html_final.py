@@ -136,7 +136,7 @@ SIDEBAR_CONFIG = [
 
 DATASET_DESCRIPTIONS = {
     # --- DATASETS (Bottom Level) ---
-    "Animation of Mechanical Systems with Off-the-Shelf Commercial Video Models": """
+    "Animating Mechanical Systems with Off-the-Shelf Commercial Video Models": """
     <div>
     <p>
         In this work, we explore the capabilities of state-of-the-art video generative models built on Diffusion Transformers (DiTs) to simulate and design mechanical systems, using 2D gear systems as a testbed. 

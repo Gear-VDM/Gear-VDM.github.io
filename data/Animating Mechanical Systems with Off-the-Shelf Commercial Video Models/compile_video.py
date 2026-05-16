@@ -31,18 +31,22 @@ except ImportError:
 ################### Do not modify ###############################
 examples = [
                 [[
+                    ("First Frame (Condition)", "./0.png"),
                     ("Veo 3.1", "./0_veo31.mp4"),
                     ("Ray3.14", "./0_ray314.mp4")
                 ]],
                 [[
+                    ("First Frame (Condition)", "./1.png"),
                     ("Veo 3.1", "./1_veo31.mp4"),
                     ("Ray3.14", "./1_ray314.mp4")
                 ]],
                 [[
+                    ("First Frame (Condition)", "./2.jpg"),
                     ("Veo 3.1", "./2_veo31.mp4"),
                     ("Ray3.14", "./2_ray314.mp4")
                 ]],
                 [[
+                    ("First Frame (Condition)", "./3.jpg"),
                     ("Veo 3.1", "./3_veo31.mp4"),
                     ("Ray3.14", "./3_ray314.mp4")
                 ]],         
@@ -79,8 +83,9 @@ def visualize(grid_inputs, output_path):
     try:
         # --- NEW CODE: Define borders (RGB format) ---
         border_cfg = {
-            "Video Point-Track": (0, 0, 255),      # Blue border
-            "Generated Video": (255, 0, 0)   # Red border
+            "First Frame (Condition)": (0, 0, 255),      # Blue border
+            "Veo 3.1": (255, 0, 0),   # Red border
+            "Ray3.14": (255, 0, 0)    # Red border
         }
         
         # Pass the border_colors argument to the stacker
@@ -93,7 +98,7 @@ def visualize(grid_inputs, output_path):
         return None
 
 if __name__ == "__main__":
-    output_dir = "./../../video/Animation of Mechanical Systems with Off-the-Shelf Commercial Video Models/"
+    output_dir = "./../../video/Animating Mechanical Systems with Off-the-Shelf Commercial Video Models/"
     os.makedirs(output_dir, exist_ok=True)
 
     for idx, example in tqdm(enumerate(examples), desc="Processing Examples"):
