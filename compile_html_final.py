@@ -45,13 +45,25 @@ CODE_LINK = "https://gear-vdm.github.io/"
 
 ABSTRACT_TEXT = """
 <p>
-We investigate whether state-of-the-art video generators base on diffusion transformers can understand and generate accurately complex physical systems, using 2D involute gear trains as a testbed.
-These mechanisms are conceptually simple and yet challenging to simulate as they require to capture accurately long cause-effect interactions, where a single driving gear dictates the rotational speed and orientation of the entire mechanism.
-We develop a rigorous evaluation framework where generated videos are mapped to a formal representation of the underlying mechanism, which is then quantitatively tested for physical correctness.
-We consider both simulation and design tasks.
-We find that off-the-shelf video generative models fail to generate physically plausible gear videos at all, but that even light fine-tuning can simulate reasonably accurately up to 20 gears.
-However, models do not generalise well beyond the number of gears seen during training.
-For design, we find that naïvely fine-tuned models struggle to produce valid spatial layouts, often generating gears detached from others, but that modulating the training diffusion noise to spend more time in a `reasoning' phase of the generation process can significantly improve them.
+Video diffusion models are increasingly viewed as a promising route toward emulating the physical world. However, their ability to reason about mechanical systems—characterized by strict topological and kinematic constraints—remains significantly underexplored. In this work, we investigate whether video diffusion transformers (DiTs) can effectively simulate and design mechanical systems, using 2D involute gear trains as a testbed. Gear mechanisms represent a simple yet challenging
+domain: determining the motion of such systems requires capturing long cause-effect interactions, where a single driving gear dictates the rotational parity of the entire mechanism.
+</p>
+<p>
+We first demonstrate that off-the-shelf video generative models fail to produce physically plausible gear interactions. 
+To diagnose this, we formally define the <i>simulation</i> and <i>design</i> of gear systems as video generation tasks, supported by the rigorous evaluation strategy. 
+We then fine-tune DiTs in both non-autoregressive and autoregressive paradigms.
+</p>
+<p>
+Our experiments reveal that even lightly fine-tuned DiTs demonstrate strong kinematic reasoning in simulation tasks, where non-autoregressive models, in particular, internally resembles graph-traversal reasonings. 
+However, we also warn that these models are brittle: performance degrades significantly when structural complexity (gear count) exceeds the training distribution.
+</p>
+<p>
+For the design task, we find that naively fine-tuned DiTs struggle to produce valid spatial layouts, often generating gears detached from others.
+To understand the reasons, we demonstrate that the topology of a gear system is determined during the extremely high-noise regime of the flow path—a phase often overlooked by standard training noise-schedules.
+By introducing a simple modification to focus training on such high-noise regime, we significantly improve the model’s ability to generate valid topology.
+</p>
+<p>
+Ultimately, our results suggest that while video DiTs possess a high potential for synthesizing mechanical systems, they require dedicated investigation for its training strategies. This work provides a crucial insights toward achieving physically faithful video models.
 </p>
 """
 
