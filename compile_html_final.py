@@ -932,7 +932,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </div>
     
     <div id="clustrmaps-widget-container">
-        <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=WfV9LOrp8VqQQUyz3EDGmVkM960W4w6fXyR9c-GDF0U&cl=ffffff&w=a"></script>
+        <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=EakYmNC57ROvcmK4DT-NyOywRN9Y4G9Bh0BWI7qmXJ8&cl=ffffff&w=a"></script>
     </div>
 
 </body>
