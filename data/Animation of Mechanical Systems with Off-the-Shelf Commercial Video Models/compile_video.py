@@ -29,23 +29,23 @@ except ImportError:
 
 
 ################### Do not modify ###############################
-good_example = [
-                [
+examples = [
+                [[
                     ("Veo 3.1", "./0_veo31.mp4"),
                     ("Ray3.14", "./0_ray314.mp4")
-                ],
-                [
+                ]],
+                [[
                     ("Veo 3.1", "./1_veo31.mp4"),
                     ("Ray3.14", "./1_ray314.mp4")
-                ],
-                [
+                ]],
+                [[
                     ("Veo 3.1", "./2_veo31.mp4"),
                     ("Ray3.14", "./2_ray314.mp4")
-                ],
-                [
+                ]],
+                [[
                     ("Veo 3.1", "./3_veo31.mp4"),
                     ("Ray3.14", "./3_ray314.mp4")
-                ],         
+                ]],         
             ]
 ########################################################################################
 
@@ -62,8 +62,8 @@ def get_white_video(output_path, width=832, height=480, duration=1.0, fps=15):
         print(f"Failed to create white video: {e}")
         return None
 
-def visualize(linear_items, output_path):
-    if not linear_items:
+def visualize(grid_inputs, output_path):
+    if not grid_inputs:
         return None
 
     # Use Source Video for FPS/Duration, but FORCE Width/Height for visualizer
@@ -73,18 +73,10 @@ def visualize(linear_items, output_path):
     w, h = 832, 480
 
     # --- Step 5: Padding ---
-    grid_cols = 2 
-    total_items = len(linear_items)
-
-    # Construct Dictionary
-    grid_inputs = {}
-    for label, path in linear_items:
-        grid_inputs[label] = path
+    grid_cols = 2
 
     # --- Step 6: Stack Videos ---
     try:
-        print(f"Stacking {len(grid_inputs)} videos into {output_path} (4 cols)...")
-        
         # --- NEW CODE: Define borders (RGB format) ---
         border_cfg = {
             "Video Point-Track": (0, 0, 255),      # Blue border
@@ -92,7 +84,7 @@ def visualize(linear_items, output_path):
         }
         
         # Pass the border_colors argument to the stacker
-        stack_videos.stack_videos(grid_inputs, output_path, cols=grid_cols, border_colors=border_cfg)
+        stack_videos.stack_videos(grid_inputs, output_path, border_colors=border_cfg)
         # ---------------------------------------------
         
         return output_path
@@ -104,5 +96,5 @@ if __name__ == "__main__":
     output_dir = "./../../video/Animation of Mechanical Systems with Off-the-Shelf Commercial Video Models/"
     os.makedirs(output_dir, exist_ok=True)
 
-    for idx, example in tqdm(enumerate(good_example), desc="Processing Examples"):
+    for idx, example in tqdm(enumerate(examples), desc="Processing Examples"):
         visualize(example, output_path = os.path.join(output_dir, f"{idx}.mp4"))

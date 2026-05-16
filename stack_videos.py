@@ -1,5 +1,5 @@
 """
-Stack all your comparison videos into a 2x3 or 2x4 video grids with titles. 
+Stack comparison videos into a titled grid.
 """
 
 import cv2
@@ -83,80 +83,159 @@ def add_header(img, text):
     # Stack vertically
     return np.vstack((header_np, img))
 
-def load_frames(path, max_frames):
+def normalize_frame(frame):
+    if frame is None or frame.size == 0:
+        return None
+
+    if frame.ndim == 2:
+        frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
+    elif frame.ndim == 3 and frame.shape[2] == 4:
+        frame = frame[:, :, :3]
+    elif frame.ndim != 3 or frame.shape[2] != 3:
+        return None
+
+    if frame.dtype != np.uint8:
+        frame = np.clip(frame, 0, 255)
+        if frame.max() <= 1.0:
+            frame = frame * 255.0
+        frame = frame.astype(np.uint8)
+
+    return frame
+
+def load_media(path, fallback_shape):
     """
-    Robustly loads frames. Handles static images and video files.
+    Loads all frames from a video or a single image.
+    Returns (frames, is_static).
     """
+    blank = np.zeros(fallback_shape, dtype=np.uint8)
+
+    if path is None or path == "":
+        return [blank], True
+
     try:
         data = iio.imread(path, index=None)
     except Exception as e:
         print(f"Error reading {path}: {e}")
-        return [np.zeros((480, 832, 3), dtype=np.uint8)]
+        return [blank], True
 
-    raw_frames = []
+    if data.ndim == 2:
+        frame = normalize_frame(data)
+        return [frame if frame is not None else blank], True
 
     if data.ndim == 3:
-        raw_frames = [data]
-    elif data.ndim == 4:
-        raw_frames = list(data)
-    elif data.ndim == 2:
-        bgr = cv2.cvtColor(data, cv2.COLOR_GRAY2RGB)
-        raw_frames = [bgr]
-    else:
-        return [np.zeros((480, 832, 3), dtype=np.uint8)]
+        frame = normalize_frame(data)
+        return [frame if frame is not None else blank], True
 
-    output_frames = []
-    source_len = len(raw_frames)
-    
-    for i in range(max_frames):
-        frame = raw_frames[i % source_len]
-        output_frames.append(frame)
-        
-    return output_frames
+    if data.ndim == 4:
+        frames = []
+        for f in data:
+            nf = normalize_frame(f)
+            frames.append(nf if nf is not None else blank)
+        if len(frames) == 0:
+            return [blank], True
+        return frames, False
 
-def stack_videos(data_dict, output_filename="grid_output.mp4", cols=4, border_colors=None):
-    if len(data_dict) == 8:
-        cols = 4
-    if len(data_dict) == 6:
-        cols = 3
-    if len(data_dict) == 3:
-        cols = 3
+    return [blank], True
+
+def resample_frames(frames, target_len, is_static):
+    if target_len <= 0:
+        return []
+
+    if not frames:
+        return []
+
+    if is_static or len(frames) <= 1:
+        return [frames[0]] * target_len
+
+    if target_len >= len(frames):
+        return frames
+
+    idxs = np.linspace(0, len(frames) - 1, target_len, dtype=int)
+    return [frames[i] for i in idxs]
+
+def stack_videos(data_grid, output_filename="grid_output.mp4", border_colors=None):
     TARGET_W = 832
     TARGET_H = 480
     TARGET_FPS = 15
-    MAX_FRAMES = 49
-    
-    print(f"Processing {len(data_dict)} inputs...")
+    DEFAULT_STATIC_SECONDS = 1
+    DEFAULT_FRAME_SHAPE = (TARGET_H, TARGET_W, 3)
+
+    if not data_grid:
+        print("No inputs found. data_grid is empty.")
+        return
+
+    rows = len(data_grid)
+    cols = max((len(row) for row in data_grid), default=0)
+    if cols == 0:
+        print("No inputs found. All rows are empty.")
+        return
+    total_inputs = sum(1 for row in data_grid for cell in row if cell is not None)
+    print(f"Processing {total_inputs} inputs...")
     
     processed_clips = []
     
-    # 1. Pre-process clips
-    for name, path in data_dict.items():
-        raw_sequence = load_frames(path, MAX_FRAMES)
-        processed_stream = []
-        
-        for frame in raw_sequence:
-            res = crop_and_resize(frame, TARGET_W, TARGET_H)
-            
-            # Ensure array is fully contiguous before drawing to avoid OpenCV errors
-            res = np.ascontiguousarray(res)
-            
-            # --- DRAW COLORED BORDERS ON THE VIDEO FRAME ONLY ---
-            # border_colors maps a title substring to an RGB tuple. e.g. {"Source": (0, 0, 255)}
-            if border_colors is not None:
-                for key, color in border_colors.items():
-                    if key in name:
-                        border_thickness = 10 
-                        cv2.rectangle(res, (0, 0), (res.shape[1]-1, res.shape[0]-1), color, border_thickness)
-                        break # Only apply the first matched border configuration
-            # ----------------------------------------------------
+    clips_grid = []
+    for row in data_grid:
+        row_clips = []
+        for col_idx in range(cols):
+            if col_idx >= len(row) or row[col_idx] is None:
+                row_clips.append(None)
+                continue
+            name, path = row[col_idx]
+            frames, is_static = load_media(path, DEFAULT_FRAME_SHAPE)
+            row_clips.append({
+                "name": name,
+                "frames": frames,
+                "is_static": is_static,
+            })
+        clips_grid.append(row_clips)
 
-            # Add the text header AFTER drawing the border
-            res = add_header(res, name)
-            
-            processed_stream.append(res)
-            
-        processed_clips.append(processed_stream)
+    video_lengths = [
+        len(cell["frames"])
+        for row in clips_grid
+        for cell in row
+        if cell is not None and not cell["is_static"] and len(cell["frames"]) > 1
+    ]
+
+    if video_lengths:
+        target_frames = min(video_lengths)
+    else:
+        target_frames = max(int(DEFAULT_STATIC_SECONDS * TARGET_FPS), 1)
+
+    # 1. Pre-process clips
+    for row in clips_grid:
+        processed_row = []
+        for cell in row:
+            if cell is None:
+                processed_row.append(None)
+                continue
+
+            raw_sequence = resample_frames(cell["frames"], target_frames, cell["is_static"])
+            processed_stream = []
+
+            for frame in raw_sequence:
+                res = crop_and_resize(frame, TARGET_W, TARGET_H)
+
+                # Ensure array is fully contiguous before drawing to avoid OpenCV errors
+                res = np.ascontiguousarray(res)
+
+                # --- DRAW COLORED BORDERS ON THE VIDEO FRAME ONLY ---
+                # border_colors maps a title substring to an RGB tuple. e.g. {"Source": (0, 0, 255)}
+                if border_colors is not None:
+                    for key, color in border_colors.items():
+                        if key in cell["name"]:
+                            border_thickness = 10
+                            cv2.rectangle(res, (0, 0), (res.shape[1]-1, res.shape[0]-1), color, border_thickness)
+                            break # Only apply the first matched border configuration
+                # ----------------------------------------------------
+
+                # Add the text header AFTER drawing the border
+                res = add_header(res, cell["name"])
+
+                processed_stream.append(res)
+
+            processed_row.append(processed_stream)
+        processed_clips.append(processed_row)
 
     # 2. Initialize Writer
     try:
@@ -166,29 +245,35 @@ def stack_videos(data_dict, output_filename="grid_output.mp4", cols=4, border_co
         writer = imageio.get_writer(output_filename, fps=TARGET_FPS)
 
     # Calculate block size (frame + header)
-    if processed_clips:
-        block_h, block_w = processed_clips[0][0].shape[:2]
-    else:
-        block_h, block_w = 480+60, 832
-        
+    block_h, block_w = TARGET_H + 64, TARGET_W
+    for row in processed_clips:
+        for cell in row:
+            if cell:
+                block_h, block_w = cell[0].shape[:2]
+                break
+        if block_h != TARGET_H + 64 or block_w != TARGET_W:
+            break
+
     blank_block = np.full((block_h, block_w, 3), 0, dtype=np.uint8)
 
     print("Stitching frames...")
     
-    for f_idx in range(MAX_FRAMES):
-        current_frame_cells = []
-        
-        for clip in processed_clips:
-            current_frame_cells.append(clip[f_idx])
-            
-        while len(current_frame_cells) % cols != 0:
-            current_frame_cells.append(blank_block)
-            
+    for f_idx in range(target_frames):
         grid_rows = []
-        for i in range(0, len(current_frame_cells), cols):
-            row_imgs = current_frame_cells[i:i+cols]
-            grid_rows.append(np.hstack(row_imgs))
-            
+
+        for row in processed_clips:
+            current_row_cells = []
+            for cell in row:
+                if cell is None or f_idx >= len(cell):
+                    current_row_cells.append(blank_block)
+                else:
+                    current_row_cells.append(cell[f_idx])
+
+            while len(current_row_cells) < cols:
+                current_row_cells.append(blank_block)
+
+            grid_rows.append(np.hstack(current_row_cells))
+
         final_frame = np.vstack(grid_rows)
         writer.append_data(final_frame)
 
@@ -197,16 +282,20 @@ def stack_videos(data_dict, output_filename="grid_output.mp4", cols=4, border_co
 
 if __name__ == "__main__":
     # Put this in a loop to generate stacked videos for each sample
-    inputs = {
-        "Source video": "raw_videos/source.mp4",
-        "ReCamMaster": "raw_videos/recam.mp4",
-        "CamCloneMaster": "raw_videos/clone.mp4",
-        "EX-4D": "raw_videos/ex4d.mp4",
-        "Point cloud render": "raw_videos/pcd.mp4", 
-        "TrajectoryCrafter": "raw_videos/traj.mp4",
-        "GEN3C": "raw_videos/gen3c.mp4",
-        "Vista4D (ours)": "raw_videos/ours.mp4"
-    }
+    inputs = [
+        [
+            ("Source video", "raw_videos/source.mp4"),
+            ("ReCamMaster", "raw_videos/recam.mp4"),
+            ("CamCloneMaster", "raw_videos/clone.mp4"),
+            ("EX-4D", "raw_videos/ex4d.mp4"),
+        ],
+        [
+            ("Point cloud render", "raw_videos/pcd.mp4"),
+            ("TrajectoryCrafter", "raw_videos/traj.mp4"),
+            ("GEN3C", "raw_videos/gen3c.mp4"),
+            ("Vista4D (ours)", "raw_videos/ours.mp4"),
+        ]
+    ]
 
     # Example setup: Map title substrings to (R, G, B) tuples
     borders = {
@@ -215,6 +304,6 @@ if __name__ == "__main__":
     }
 
     try:
-        stack_videos(inputs, "videos/sample_name.mp4", cols=4, border_colors=borders)
+        stack_videos(inputs, "videos/sample_name.mp4", border_colors=borders)
     except Exception as e:
         print(f"An error occurred: {e}")
