@@ -71,15 +71,20 @@ Ultimately, our results suggest that while video DiTs possess a high potential f
 # --- 3-LEVEL HIERARCHY CONFIG ---
 # The script automatically detects if an item is a "Group" (tuple with list) or "Single" (string)
 SIDEBAR_CONFIG = [
-    ("Supplemental Videos", [
+    ("Motivation", [
         "Animating mechanical systems with commercial video models",
+    ]),
+    ("Study1: Simulating gear systems", [
         "Results of non-autoregressive simulation (Sec 4)",
         "Results of autoregressive simulation (Sec 4)",
+    ]),
+    ("Study2: Designing gear systems", [
         "Results of non-autoregressive design (Sec 5)",
         "Results of autoregressive design (Sec 5)",
         "(Ablation) Results of non-autoregressive design with default time schedule",
         "(Ablation) Results of autoregressive design with default time schedule",
     ]),
+    ("Conclusions: ", []),
 ]
 
 """
