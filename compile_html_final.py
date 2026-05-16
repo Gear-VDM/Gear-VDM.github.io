@@ -72,7 +72,7 @@ Ultimately, our results suggest that while video DiTs possess a high potential f
 # The script automatically detects if an item is a "Group" (tuple with list) or "Single" (string)
 SIDEBAR_CONFIG = [
     ("Motivation", [
-        "Animation of Mechanical Systems with Off-the-Shelf Commercial Video Models",
+        "Animating Mechanical Systems with Off-the-Shelf Commercial Video Models",
     ]),
     ("Study1: Simulating gear systems", [
         "Results of non-autoregressive simulation (Sec 4)",
