@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Towards Designing and Simulating Mechanical Systems with Video Diffusion Models: A Study with 2D Gear Systems</title>
+    <meta name="description" content="Towards Designing and Simulating Mechanical Systems with Video Diffusion Models: A Study with 2D Gear Systems">
+    
+    <style>
+        :root {
+            /* --- COLOR PALETTE --- */
+            --primary-color: #0078d4;        
+            --primary-hover: #005a9e;        
+            --text-main: #333333;            
+            --text-title: #222222;           
+            --text-secondary: #555555;       
+            --bg-sidebar: #f4f4f4;
+            --bg-body: #ffffff;
+            --border-color: #e0e0e0;
+            --bg-section: #f4f4f4;
+            --bg-level1: #e6f2fb; 
+            
+            /* Standard System Sans-Serif Stack */
+            --font-stack: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex; 
+            overflow-x: hidden;
+        }
+
+        /* --- HIDE CLUSTRMAPS CONTAINER --- */
+        #clustrmaps-widget-container {
+            display: none !important;
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+        
+        /* --- Sidebar --- */
+        .dataset-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px; 
+            height: 100vh;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid #d0d0d0;
+            padding-top: 60px; 
+            padding-left: 0;
+            padding-right: 0;
+            z-index: 1002;
+            display: flex;
+            flex-direction: column; 
+            gap: 2px; 
+            overflow-y: auto; 
+            overflow-x: hidden;
+            box-sizing: border-box;
+            transition: width 0.3s ease; 
+        }
+
+        .dataset-nav::-webkit-scrollbar { width: 5px; }
+        .dataset-nav::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        .dataset-nav::-webkit-scrollbar-track { background: transparent; }
+
+        .nav-category {
+            font-size: 11px;
+            text-transform: none; 
+            color: #777; 
+            font-weight: 700;
+            margin-top: 25px;
+            margin-bottom: 5px;
+            padding-left: 15px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+        
+        .nav-subcategory {
+            font-size: 12px;
+            color: #444;
+            font-weight: 700;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            padding-left: 12px;
+            text-transform: none;
+        }
+
+        /* Base Sidebar Button */
+        .dataset-btn {
+            background-color: transparent;
+            color: #444;
+            border: none;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            text-align: left;
+            word-break: break-word; 
+            white-space: normal;    
+            line-height: 1.4;        
+            transition: all 0.2s ease;
+            font-family: var(--font-stack);
+            width: 100%;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        .dataset-btn:hover {
+            background-color: #e0e0e0;
+            color: #000;
+        }
+
+        .dataset-btn.active {
+            background-color: var(--bg-level1);
+            color: #000;
+            border-left-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Overview Button */
+        .dataset-btn.overview-btn {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 8px 15px;
+        }
+
+        /* Level 2 Button (Sub-Category) */
+        .dataset-btn.level-2 {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 15px 8px 15px; 
+            margin-top: 2px;
+            color: #333;
+        }
+
+        /* Level 3 Button (Content) */
+        .dataset-btn.level-3 {
+            font-size: 12px;
+            font-weight: 400;
+            padding: 6px 15px 6px 30px; /* Indented */
+            color: #555;
+        }
+        
+        .dataset-btn.level-3.active {
+             background-color: #f0f8ff; 
+             color: var(--primary-color);
+        }
+
+        /* --- Toggle Button --- */
+        #sidebar-toggle {
+            position: fixed;
+            top: 10px;
+            left: 5px; 
+            z-index: 1003;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+        #sidebar-toggle:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: 250px;
+            width: calc(100% - 250px); 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            box-sizing: border-box; 
+        }
+
+        .paper-header {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 50px 20px 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .paper-title {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 2.2rem;
+            font-weight: 400; 
+            color: #444; 
+            margin: 0 auto 20px auto;
+            line-height: 1.3;
+            max-width: 900px;
+            letter-spacing: -0.2px; 
+        }
+
+        .paper-authors, .paper-institutions {
+            font-size: 1.2rem;
+            color: #222;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .paper-authors .author-link {
+            color: inherit;
+            text-decoration-line: underline;
+            text-decoration-style: solid;
+            text-decoration-color: rgba(0, 120, 212, 0.35);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            transition: color 0.2s ease, text-decoration-color 0.2s ease;
+        }
+        .paper-authors .author-link:hover {
+            color: var(--primary-color);
+            text-decoration-color: var(--primary-color);
+        }
+        .paper-authors .author-link:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+            text-decoration-color: transparent;
+        }
+        .paper-institutions { font-size: 1rem; color: #666; margin-bottom: 10px; font-weight: 400; }
+        .paper-venue { font-size: 1.15rem; color: #444; margin-bottom: 18px; font-weight: 600; letter-spacing: 0.4px; }
+        .author-span, .institution-span { margin: 0 10px; display: inline-block; }
+        sup { font-size: 0.7em; vertical-align: super; margin-left: 2px; color: var(--primary-color); }
+
+        .link-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .link-btn { background-color: #333; color: #fff; padding: 10px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: background-color 0.2s, transform 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .link-btn:hover { background-color: #555; transform: translateY(-2px); }
+        .link-icon { width: 16px; height: 16px; fill: currentColor; }
+
+        .paper-footer { width: 100%; background-color: #fafafa; border-top: 1px solid var(--border-color); padding: 40px 20px; margin-top: 80px; text-align: center; }
+        .citation-block { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 15px; text-align: left; font-family: 'Consolas', monospace; font-size: 13px; color: #555; max-width: 800px; margin: 20px auto; overflow-x: auto; white-space: pre; }
+
+        .back-btn {
+            position: fixed; bottom: 30px; right: 30px; z-index: 2000;
+            background-color: #222; color: white; border: none; padding: 12px 24px;
+            border-radius: 50px; font-size: 14px; font-family: var(--font-stack);
+            font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background-color 0.2s; display: none; 
+            align-items: center; gap: 8px; letter-spacing: 0.3px;
+        }
+        .back-btn:hover { transform: translateY(-2px); background-color: #000; box-shadow: 0 8px 25px rgba(0,0,0,0.25); }
+
+        /* --- Page & Dataset Styles --- */
+        .content-block { margin-bottom: 80px; width: 100%; display: flex; flex-direction: column; align-items: center; scroll-margin-top: 80px; gap: 40px; }
+        
+        h2.dataset-title { font-family: var(--font-stack); font-size: 1.6rem; font-weight: 400; color: var(--text-title); margin-bottom: 15px; border-bottom: 3px solid var(--primary-color); padding-bottom: 8px; display: inline-block; }
+        h3.content-subtitle { font-size: 1.4rem; color: #444; margin-top: 0; margin-bottom: 10px; font-weight: 600; }
+        .dataset-description { font-size: 1.05rem; color: var(--text-secondary); max-width: 800px; text-align: left; line-height: 1.7; margin: 0 auto 30px auto; padding: 0 20px; }
+
+        /* --- Overview Styling --- */
+        .overview-container { width: 98%; max-width: 1600px; padding: 0 20px 100px 20px; display: none; box-sizing: border-box; margin: 0 auto; }
+        
+        .abstract-section { max-width: 900px; margin: 0 auto 60px auto; text-align: justify; background-color: #ffffff; padding: 30px 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; }
+        .abstract-title { text-align: center; font-weight: 700; font-size: 1.2rem; text-transform: uppercase; color: #444; margin-bottom: 15px; letter-spacing: 1px; }
+        .abstract-content { font-size: 1.05rem; line-height: 1.8; color: #333; }
+
+        /* === HIERARCHY STYLES (UPDATED) === */
+        
+        /* Base styles for Level 1 & 2 Headers */
+        .hierarchy-bar {
+            width: 100%;
+            text-align: center; 
+            padding: 15px 0; 
+            border-radius: 6px;
+            font-family: var(--font-stack);
+            margin-bottom: 30px;
+            text-transform: none; 
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* LEVEL 1: Lighter Blue Shadow, Blue Border, Larger */
+        .level-1-header {
+            font-size: 1.5rem;
+            margin-top: 60px;
+            background-color: var(--bg-level1); /* Solid Light Blue Color */
+            color: var(--primary-color);
+            box-shadow: none; 
+            border-left: 5px solid var(--primary-color);
+            border-top: none;
+        }
+
+        /* LEVEL 2: Gray Shadow, Blue Border, Smaller */
+        .level-2-header {
+            font-size: 1.25rem;
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            color: #444; 
+            box-shadow: none; 
+            border: 1px solid #eee;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        /* LEVEL 3: Underscore Style (Content Title) */
+        .level-3-header {
+            font-family: var(--font-stack);
+            font-size: 1.3rem; 
+            color: #222; 
+            margin: 0;
+            font-weight: 600;
+            display: inline-block;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 6px;
+        }
+
+        .overview-section { margin-bottom: 90px; width: 98%; max-width: 1600px; margin-left: auto; margin-right: auto; padding: 0 20px; box-sizing: border-box; scroll-margin-top: 80px; }
+        .overview-section-header { text-align: center; margin-bottom: 20px; }
+        .overview-desc { font-size: 1rem; color: var(--text-secondary); margin: 0 auto 30px auto; line-height: 1.6; max-width: 900px; text-align: left; }
+        .overview-action { text-align: center; margin-top: 30px; }
+
+        /* Carousel */
+        .carousel-wrapper { position: relative; width: 100%; background: #000; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+        .carousel-wrapper video { width: 100%; display: block; height: auto; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0, 0, 0, 0.5); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 24px; transition: background-color 0.2s; opacity: 0; }
+        .carousel-wrapper:hover .carousel-btn { opacity: 1; }
+        .carousel-btn:hover { background-color: rgba(0, 0, 0, 0.8); }
+        .carousel-btn.left { left: 20px; }
+        .carousel-btn.right { right: 20px; }
+        .slide-counter { position: absolute; bottom: 20px; right: 20px; background-color: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 4px; font-size: 13px; pointer-events: none; font-weight: 600; }
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 4px 6px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #8fbce6 transparent;
+            white-space: nowrap;
+        }
+        .carousel-dots::-webkit-scrollbar { height: 6px; }
+        .carousel-dots::-webkit-scrollbar-thumb { background: #8fbce6; border-radius: 999px; }
+        .carousel-dots::-webkit-scrollbar-track { background: transparent; }
+        .carousel-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #d7ebfb;
+            cursor: pointer;
+            flex: 0 0 auto;
+            padding: 0;
+            border: none;
+        }
+        .carousel-dot:hover { background: #b8daf5; }
+        .carousel-dot.active {
+            background: var(--primary-color);
+            transform: scale(1.15);
+        }
+
+        .btn-view-all { background-color: var(--primary-color); color: #fff; border: 2px solid var(--primary-color); padding: 10px 30px; border-radius: 50px; cursor: pointer; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s; text-transform: uppercase; font-family: var(--font-stack); display: inline-block; letter-spacing: 0.5px; }
+        .btn-view-all:hover { background-color: var(--primary-hover); border-color: var(--primary-hover); color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+
+        /* Cards */
+        .container { display: flex; flex-direction: column; align-items: center; gap: 50px; padding-bottom: 100px; width: 98%; max-width: 1600px; box-sizing: border-box; padding-top: 20px; }
+        .card { background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; border: 1px solid #e0e0e0; display: block; transition: transform 0.2s ease; }
+        
+        /* --- FIX: Ensure videos inside cards do not exceed screen width --- */
+        .card video { width: 100%; height: auto; display: block; }
+        
+        .caption-box { padding: 25px; background-color: #fff; border-top: 1px solid #eee; font-family: 'Consolas', 'Monaco', monospace; font-size: 14px; line-height: 1.6; white-space: pre-wrap; color: #333; }
+        .caption-line { display: block; }
+        
+        .page-view { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .page-view.active { display: flex; }
+
+        /* Collapsed Sidebar */
+        body.sidebar-collapsed .dataset-nav { width: 50px; padding-left: 5px; padding-right: 5px; }
+        body.sidebar-collapsed .main-content { margin-left: 50px; width: calc(100% - 50px); }
+        body.sidebar-collapsed .dataset-btn, body.sidebar-collapsed .nav-subcategory { opacity: 0; pointer-events: none; white-space: nowrap; }
+        body.sidebar-collapsed #sidebar-toggle { background-color: #e6e6e6; }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const toggleBtn = document.getElementById('sidebar-toggle');
+            const body = document.body;
+            
+            const overviewVideosMap = {"Animating mechanical systems with commercial video models": ["./video/Animating mechanical systems with commercial video models/0_ray314.mp4", "./video/Animating mechanical systems with commercial video models/1_veo3.mp4", "./video/Animating mechanical systems with commercial video models/2_ray314.mp4", "./video/Animating mechanical systems with commercial video models/3_veo3.mp4", "./video/Animating mechanical systems with commercial video models/4_luma.mp4", "./video/Animating mechanical systems with commercial video models/5_veo3.mp4"], "Results of non-autoregressive simulation (Sec 4)": ["./video/Results of non-autoregressive simulation (Sec 4)/0.mp4", "./video/Results of non-autoregressive simulation (Sec 4)/1.mp4", "./video/Results of non-autoregressive simulation (Sec 4)/2.mp4", "./video/Results of non-autoregressive simulation (Sec 4)/3.mp4", "./video/Results of non-autoregressive simulation (Sec 4)/4.mp4", "./video/Results of non-autoregressive simulation (Sec 4)/5.mp4"], "Results of autoregressive simulation (Sec 4)": ["./video/Results of autoregressive simulation (Sec 4)/0.mp4", "./video/Results of autoregressive simulation (Sec 4)/1.mp4", "./video/Results of autoregressive simulation (Sec 4)/2.mp4", "./video/Results of autoregressive simulation (Sec 4)/3.mp4", "./video/Results of autoregressive simulation (Sec 4)/4.mp4", "./video/Results of autoregressive simulation (Sec 4)/5.mp4", "./video/Results of autoregressive simulation (Sec 4)/6.mp4", "./video/Results of autoregressive simulation (Sec 4)/7.mp4", "./video/Results of autoregressive simulation (Sec 4)/8.mp4", "./video/Results of autoregressive simulation (Sec 4)/9.mp4", "./video/Results of autoregressive simulation (Sec 4)/10.mp4"], "Results of non-autoregressive design (Sec 5)": ["./video/Results of non-autoregressive design (Sec 5)/0.mp4", "./video/Results of non-autoregressive design (Sec 5)/1.mp4", "./video/Results of non-autoregressive design (Sec 5)/2.mp4", "./video/Results of non-autoregressive design (Sec 5)/3.mp4", "./video/Results of non-autoregressive design (Sec 5)/4.mp4"], "Results of autoregressive design (Sec 5)": ["./video/Results of autoregressive design (Sec 5)/0.mp4", "./video/Results of autoregressive design (Sec 5)/1.mp4", "./video/Results of autoregressive design (Sec 5)/2.mp4", "./video/Results of autoregressive design (Sec 5)/3.mp4", "./video/Results of autoregressive design (Sec 5)/4.mp4", "./video/Results of autoregressive design (Sec 5)/5.mp4", "./video/Results of autoregressive design (Sec 5)/6.mp4", "./video/Results of autoregressive design (Sec 5)/7.mp4", "./video/Results of autoregressive design (Sec 5)/8.mp4", "./video/Results of autoregressive design (Sec 5)/9.mp4", "./video/Results of autoregressive design (Sec 5)/12.mp4"], "(Ablation) Results of non-autoregressive design with default time schedule": ["./video/(Ablation) Results of non-autoregressive design with default time schedule/0.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/1.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/2.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/3.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/4.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/5.mp4"], "(Ablation) Results of autoregressive design with default time schedule": ["./video/(Ablation) Results of autoregressive design with default time schedule/0.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/1.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/2.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/3.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/4.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/5.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/6.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/7.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/8.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/9.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/10.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/11.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/12.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/13.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/14.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/15.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/16.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/17.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/18.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/19.mp4"]}; 
+            const datasetToPageMap = {"Animating mechanical systems with commercial video models": "Animating mechanical systems with commercial video models", "Results of non-autoregressive simulation (Sec 4)": "Results of non-autoregressive simulation (Sec 4)", "Results of autoregressive simulation (Sec 4)": "Results of autoregressive simulation (Sec 4)", "Results of non-autoregressive design (Sec 5)": "Results of non-autoregressive design (Sec 5)", "Results of autoregressive design (Sec 5)": "Results of autoregressive design (Sec 5)", "(Ablation) Results of non-autoregressive design with default time schedule": "(Ablation) Results of non-autoregressive design with default time schedule", "(Ablation) Results of autoregressive design with default time schedule": "(Ablation) Results of autoregressive design with default time schedule"}; 
+            const pageToFirstDatasetMap = {"Animating mechanical systems with commercial video models": "Animating mechanical systems with commercial video models", "Results of non-autoregressive simulation (Sec 4)": "Results of non-autoregressive simulation (Sec 4)", "Results of autoregressive simulation (Sec 4)": "Results of autoregressive simulation (Sec 4)", "Results of non-autoregressive design (Sec 5)": "Results of non-autoregressive design (Sec 5)", "Results of autoregressive design (Sec 5)": "Results of autoregressive design (Sec 5)", "(Ablation) Results of non-autoregressive design with default time schedule": "(Ablation) Results of non-autoregressive design with default time schedule", "(Ablation) Results of autoregressive design with default time schedule": "(Ablation) Results of autoregressive design with default time schedule"};
+            const pagesData = {"Animating mechanical systems with commercial video models": {"title": "Animating mechanical systems with commercial video models", "description": "", "is_group": false, "blocks": [{"id": "Animating mechanical systems with commercial video models", "description": "", "videos": [{"src": "./video/Animating mechanical systems with commercial video models/0_ray314.mp4", "caption": ""}, {"src": "./video/Animating mechanical systems with commercial video models/1_veo3.mp4", "caption": ""}, {"src": "./video/Animating mechanical systems with commercial video models/2_ray314.mp4", "caption": ""}, {"src": "./video/Animating mechanical systems with commercial video models/3_veo3.mp4", "caption": ""}, {"src": "./video/Animating mechanical systems with commercial video models/4_luma.mp4", "caption": ""}, {"src": "./video/Animating mechanical systems with commercial video models/5_veo3.mp4", "caption": ""}]}]}, "Results of non-autoregressive simulation (Sec 4)": {"title": "Results of non-autoregressive simulation (Sec 4)", "description": "", "is_group": false, "blocks": [{"id": "Results of non-autoregressive simulation (Sec 4)", "description": "", "videos": [{"src": "./video/Results of non-autoregressive simulation (Sec 4)/0.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive simulation (Sec 4)/1.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive simulation (Sec 4)/2.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive simulation (Sec 4)/3.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive simulation (Sec 4)/4.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive simulation (Sec 4)/5.mp4", "caption": ""}]}]}, "Results of autoregressive simulation (Sec 4)": {"title": "Results of autoregressive simulation (Sec 4)", "description": "", "is_group": false, "blocks": [{"id": "Results of autoregressive simulation (Sec 4)", "description": "", "videos": [{"src": "./video/Results of autoregressive simulation (Sec 4)/0.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/1.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/2.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/3.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/4.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/5.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/6.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/7.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/8.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/9.mp4", "caption": ""}, {"src": "./video/Results of autoregressive simulation (Sec 4)/10.mp4", "caption": ""}]}]}, "Results of non-autoregressive design (Sec 5)": {"title": "Results of non-autoregressive design (Sec 5)", "description": "", "is_group": false, "blocks": [{"id": "Results of non-autoregressive design (Sec 5)", "description": "", "videos": [{"src": "./video/Results of non-autoregressive design (Sec 5)/0.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive design (Sec 5)/1.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive design (Sec 5)/2.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive design (Sec 5)/3.mp4", "caption": ""}, {"src": "./video/Results of non-autoregressive design (Sec 5)/4.mp4", "caption": ""}]}]}, "Results of autoregressive design (Sec 5)": {"title": "Results of autoregressive design (Sec 5)", "description": "", "is_group": false, "blocks": [{"id": "Results of autoregressive design (Sec 5)", "description": "", "videos": [{"src": "./video/Results of autoregressive design (Sec 5)/0.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/1.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/2.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/3.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/4.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/5.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/6.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/7.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/8.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/9.mp4", "caption": ""}, {"src": "./video/Results of autoregressive design (Sec 5)/12.mp4", "caption": ""}]}]}, "(Ablation) Results of non-autoregressive design with default time schedule": {"title": "(Ablation) Results of non-autoregressive design with default time schedule", "description": "", "is_group": false, "blocks": [{"id": "(Ablation) Results of non-autoregressive design with default time schedule", "description": "", "videos": [{"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/0.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/1.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/2.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/3.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/4.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/5.mp4", "caption": ""}]}]}, "(Ablation) Results of autoregressive design with default time schedule": {"title": "(Ablation) Results of autoregressive design with default time schedule", "description": "", "is_group": false, "blocks": [{"id": "(Ablation) Results of autoregressive design with default time schedule", "description": "", "videos": [{"src": "./video/(Ablation) Results of autoregressive design with default time schedule/0.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/1.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/2.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/3.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/4.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/5.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/6.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/7.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/8.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/9.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/10.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/11.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/12.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/13.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/14.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/15.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/16.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/17.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/18.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/19.mp4", "caption": ""}]}]}};
+
+            const carouselIndices = {};
+
+            toggleBtn.addEventListener('click', () => {
+                body.classList.toggle('sidebar-collapsed');
+                toggleBtn.innerHTML = body.classList.contains('sidebar-collapsed') ? "&#9776;" : "&laquo;";
+            });
+
+            let activePage = "Overview"; 
+            let activeDatasetName = null; 
+            const overviewContainer = document.getElementById('overview-container');
+            const cardsContainer = document.getElementById('cards-container'); 
+            const backBtn = document.getElementById('back-to-overview');
+
+            let observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    let video = entry.target;
+                    
+                    if (entry.isIntersecting) {
+                        if (video.dataset.src) {
+                            video.src = video.dataset.src;
+                            video.load();
+                            video.removeAttribute('data-src');
+                        }
+                        var playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => { });
+                        }
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, { rootMargin: "200px" });
+
+            function handleScrollSpy() {
+                if (activePage === "Overview") return;
+                const blocks = cardsContainer.querySelectorAll('.content-block');
+                
+                blocks.forEach(block => {
+                    const rect = block.getBoundingClientRect();
+                    if (rect.top >= -50 && rect.top < 300) {
+                        const id = block.id.replace('dataset-block-', '');
+                        if (id !== activeDatasetName) {
+                            activeDatasetName = id;
+                            updateSidebarHighlight();
+                        }
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', handleScrollSpy);
+
+            function updateCarouselDots(datasetName, activeIndex) {
+                const dotsWrap = document.getElementById('carousel-dots-' + datasetName);
+                if (!dotsWrap) return;
+
+                const dots = dotsWrap.querySelectorAll('.carousel-dot');
+                dots.forEach((dot, idx) => {
+                    dot.classList.toggle('active', idx === activeIndex);
+                });
+
+                if (dots[activeIndex]) {
+                    dots[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }
+
+            window.setCarouselIndex = function(datasetName, newIndex) {
+                const videoList = overviewVideosMap[datasetName];
+                if (!videoList || videoList.length === 0) return;
+
+                if (carouselIndices[datasetName] === undefined) {
+                    carouselIndices[datasetName] = 0;
+                }
+
+                if (newIndex >= videoList.length) newIndex = 0;
+                if (newIndex < 0) newIndex = videoList.length - 1;
+
+                carouselIndices[datasetName] = newIndex;
+
+                const wrapper = document.getElementById('carousel-' + datasetName);
+                const videoEl = wrapper.querySelector('video');
+                const counterEl = wrapper.querySelector('.slide-counter');
+
+                videoEl.src = videoList[newIndex];
+                videoEl.play();
+
+                if (counterEl) {
+                    counterEl.innerText = `${newIndex + 1} / ${videoList.length}`;
+                }
+
+                updateCarouselDots(datasetName, newIndex);
+            };
+
+            window.moveCarousel = function(datasetName, direction) {
+                const videoList = overviewVideosMap[datasetName];
+                if (!videoList || videoList.length === 0) return;
+
+                if (carouselIndices[datasetName] === undefined) {
+                    carouselIndices[datasetName] = 0;
+                }
+
+                let newIndex = carouselIndices[datasetName] + direction;
+                window.setCarouselIndex(datasetName, newIndex);
+            };
+
+            // --- NAVIGATION HELPERS ---
+            function setRoute(pageId, datasetName) {
+                activePage = pageId;
+                activeDatasetName = datasetName;
+                
+                const hashValue = datasetName ? datasetName : pageId;
+                if (window.location.hash !== '#' + encodeURIComponent(hashValue)) {
+                    window.history.pushState(null, null, '#' + encodeURIComponent(hashValue));
+                }
+                
+                updateView();
+                
+                if (datasetName) {
+                    setTimeout(() => {
+                        const targetCard = document.getElementById('dataset-block-' + datasetName);
+                        if (targetCard) {
+                            targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 10);
+                } else {
+                    window.scrollTo(0, 0);
+                }
+            }
+
+            window.navigateToDataset = function(datasetName) {
+                const targetPage = datasetToPageMap[datasetName];
+                if (!targetPage) return;
+                setRoute(targetPage, datasetName);
+            };
+
+            window.navigateToGroup = function(pageId) {
+                setRoute(pageId, null);
+            };
+
+            window.backToOverview = function() {
+                const sectionDataset = activeDatasetName || pageToFirstDatasetMap[activePage] || null;
+                activePage = "Overview";
+                activeDatasetName = sectionDataset;
+
+                if (window.location.hash !== '#Overview') {
+                    window.history.pushState(null, null, '#Overview');
+                }
+
+                updateView();
+
+                if (sectionDataset) {
+                    setTimeout(() => {
+                        const targetSection = document.getElementById('section-' + sectionDataset);
+                        if (targetSection) {
+                            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            window.scrollTo(0, 0);
+                        }
+                    }, 10);
+                } else {
+                    window.scrollTo(0, 0);
+                }
+            };
+
+            function updateSidebarHighlight() {
+                const datasetBtns = document.querySelectorAll('.dataset-btn');
+                datasetBtns.forEach(btn => {
+                    const targetPage = btn.dataset.target;
+                    const targetDataset = btn.dataset.dataset; 
+
+                    btn.classList.remove('active');
+
+                    if (activePage === "Overview") {
+                         if (targetPage === "Overview") btn.classList.add('active');
+                    } 
+                    else if (btn.classList.contains('level-2')) {
+                        if (targetPage === activePage) {
+                            btn.classList.add('active');
+                        }
+                    } 
+                    else if (btn.classList.contains('level-3')) {
+                        if (targetDataset === activeDatasetName) {
+                            btn.classList.add('active');
+                        }
+                    }
+                });
+            }
+
+            function renderPage(pageId) {
+                cardsContainer.innerHTML = ""; // Clear memory!
+                
+                const data = pagesData[pageId];
+                if (!data) return;
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = "hierarchy-bar level-2-header";
+                headerDiv.style.marginBottom = "40px";
+                headerDiv.innerText = data.title;
+                cardsContainer.appendChild(headerDiv);
+
+                // --- Render Group Description (only if it exists) ---
+                if (data.description) {
+                    const groupDescEl = document.createElement('div');
+                    groupDescEl.className = "dataset-description";
+                    groupDescEl.style.marginBottom = "30px";
+                    groupDescEl.innerHTML = data.description;
+                    cardsContainer.appendChild(groupDescEl);
+                }
+
+                data.blocks.forEach(block => {
+                    const blockDiv = document.createElement('div');
+                    blockDiv.className = "content-block";
+                    blockDiv.id = "dataset-block-" + block.id;
+
+                    if (data.is_group) {
+                         const titleEl = document.createElement('h3');
+                         titleEl.className = "level-3-header";
+                         titleEl.style.fontSize = "1.5rem";
+                         titleEl.style.marginBottom = "20px";
+                         titleEl.innerText = block.id;
+                         blockDiv.appendChild(titleEl);
+                    }
+
+                    if (block.description) {
+                        const descEl = document.createElement('div');
+                        descEl.className = "dataset-description";
+                        descEl.innerHTML = block.description;
+                        blockDiv.appendChild(descEl);
+                    }
+
+                    block.videos.forEach(vid => {
+                        const cardDiv = document.createElement('div');
+                        cardDiv.className = "card";
+                        
+                        const videoTag = document.createElement('video');
+                        videoTag.className = "lazy";
+                        videoTag.setAttribute('data-src', vid.src);
+                        videoTag.preload = "none";
+                        videoTag.controls = true;
+                        videoTag.autoplay = true;
+                        videoTag.loop = true;
+                        videoTag.muted = true;
+                        videoTag.playsInline = true;
+                        
+                        cardDiv.appendChild(videoTag);
+
+                        if (vid.caption) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = vid.caption; 
+                            while (tempDiv.firstChild) {
+                                cardDiv.appendChild(tempDiv.firstChild);
+                            }
+                        }
+
+                        blockDiv.appendChild(cardDiv);
+                    });
+
+                    cardsContainer.appendChild(blockDiv);
+                });
+
+                const newVideos = cardsContainer.querySelectorAll('video.lazy');
+                newVideos.forEach(v => observer.observe(v));
+            }
+
+            function updateView() {
+                updateSidebarHighlight();
+
+                if (activePage === "Overview") {
+                    cardsContainer.style.display = "none";
+                    cardsContainer.innerHTML = ""; 
+                    
+                    overviewContainer.style.display = "block";
+                    backBtn.style.display = "none"; 
+                    
+                    const overviewVideos = overviewContainer.querySelectorAll('video.lazy');
+                    overviewVideos.forEach(v => observer.observe(v));
+
+                } else {
+                    overviewContainer.style.display = "none";
+                    backBtn.style.display = "flex"; 
+                    cardsContainer.style.display = "flex"; 
+
+                    renderPage(activePage);
+                }
+            }
+
+            // --- HANDLE INITIAL LOAD VIA URL ---
+            function loadStateFromHash() {
+                const hash = window.location.hash.substring(1); 
+                const decodedHash = decodeURIComponent(hash);
+                
+                if (!decodedHash || decodedHash === "Overview") {
+                    activePage = "Overview";
+                    activeDatasetName = null;
+                } else {
+                    // Check if it matches a dataset first
+                    if (datasetToPageMap[decodedHash]) {
+                        activePage = datasetToPageMap[decodedHash];
+                        activeDatasetName = decodedHash;
+                    } else if (pagesData[decodedHash]) {
+                        // Or just a page group
+                        activePage = decodedHash;
+                        activeDatasetName = null;
+                    } else {
+                        // Fallback
+                        activePage = "Overview";
+                    }
+                }
+                
+                updateView();
+
+                // Scroll to target if specific dataset
+                if (activeDatasetName && activePage !== "Overview") {
+                    setTimeout(() => {
+                        const targetCard = document.getElementById('dataset-block-' + activeDatasetName);
+                        if (targetCard) {
+                            targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 100);
+                }
+            }
+
+            window.addEventListener('hashchange', loadStateFromHash);
+
+            document.querySelectorAll('.dataset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                        body.classList.add('sidebar-collapsed');
+                        toggleBtn.innerHTML = "&#9776;";
+                    }
+                });
+            });
+
+            loadStateFromHash();
+        });
+    </script>
+</head>
+<body>
+
+    <button id="sidebar-toggle" title="Toggle Sidebar">&laquo;</button>
+
+    <div class="dataset-nav">
+        <button class="dataset-btn overview-btn" data-target="Overview" onclick="backToOverview()">Overview</button>
+        <div class="nav-category">Supplemental Videos</div>
+<button class="dataset-btn level-2" data-target="Animating mechanical systems with commercial video models" onclick="navigateToGroup('Animating mechanical systems with commercial video models')">Animating mechanical systems with commercial video models</button>
+<button class="dataset-btn level-2" data-target="Results of non-autoregressive simulation (Sec 4)" onclick="navigateToGroup('Results of non-autoregressive simulation (Sec 4)')">Results of non-autoregressive simulation (Sec 4)</button>
+<button class="dataset-btn level-2" data-target="Results of autoregressive simulation (Sec 4)" onclick="navigateToGroup('Results of autoregressive simulation (Sec 4)')">Results of autoregressive simulation (Sec 4)</button>
+<button class="dataset-btn level-2" data-target="Results of non-autoregressive design (Sec 5)" onclick="navigateToGroup('Results of non-autoregressive design (Sec 5)')">Results of non-autoregressive design (Sec 5)</button>
+<button class="dataset-btn level-2" data-target="Results of autoregressive design (Sec 5)" onclick="navigateToGroup('Results of autoregressive design (Sec 5)')">Results of autoregressive design (Sec 5)</button>
+<button class="dataset-btn level-2" data-target="(Ablation) Results of non-autoregressive design with default time schedule" onclick="navigateToGroup('(Ablation) Results of non-autoregressive design with default time schedule')">(Ablation) Results of non-autoregressive design with default time schedule</button>
+<button class="dataset-btn level-2" data-target="(Ablation) Results of autoregressive design with default time schedule" onclick="navigateToGroup('(Ablation) Results of autoregressive design with default time schedule')">(Ablation) Results of autoregressive design with default time schedule</button>
+
+    </div>
+
+    <div class="main-content">
+        <header class="paper-header">
+            <h1 class="paper-title">Towards Designing and Simulating Mechanical Systems with Video Diffusion Models: A Study with 2D Gear Systems</h1>
+            
+            <div class="paper-meta">
+                <div class="paper-authors"><span class="author-span">Anonymous Authors<sup>1</sup></span></div>
+                <div class="paper-institutions"><span class="institution-span"><sup>1</sup>Anonymous Institutions</span></div>
+                <div class="paper-venue">SIGGRAPH 2026</div>
+                <div class="link-buttons"></div>
+            </div>
+        </header>
+
+        <button id="back-to-overview" class="back-btn" onclick="backToOverview()">
+            <span>&larr;</span> Back to Overview
+        </button>
+
+        <div id="overview-container" class="overview-container">
+            <div class="abstract-section">
+                <div class="abstract-title">Abstract</div>
+                <div class="abstract-content">
+                    
+<p>
+We investigate whether state-of-the-art video generators base on diffusion transformers can understand and generate accurately complex physical systems, using 2D involute gear trains as a testbed.
+These mechanisms are conceptually simple and yet challenging to simulate as they require to capture accurately long cause-effect interactions, where a single driving gear dictates the rotational speed and orientation of the entire mechanism.
+We develop a rigorous evaluation framework where generated videos are mapped to a formal representation of the underlying mechanism, which is then quantitatively tested for physical correctness.
+We consider both simulation and design tasks.
+We find that off-the-shelf video generative models fail to generate physically plausible gear videos at all, but that even light fine-tuning can simulate reasonably accurately up to 20 gears.
+However, models do not generalise well beyond the number of gears seen during training.
+For design, we find that naïvely fine-tuned models struggle to produce valid spatial layouts, often generating gears detached from others, but that modulating the training diffusion noise to spend more time in a `reasoning' phase of the generation process can significantly improve them.
+</p>
+
+                </div>
+            </div>
+            
+        <div class="hierarchy-bar level-1-header">
+            Supplemental Videos
+        </div>
+        
+            <div class="hierarchy-bar level-2-header">
+                Animating mechanical systems with commercial video models
+            </div>
+            
+                <div class="overview-section" id="section-Animating mechanical systems with commercial video models">
+                    
+                    <div class="overview-desc"></div>
+                    
+                    <div class="carousel-wrapper" id="carousel-Animating mechanical systems with commercial video models">
+                        <button class="carousel-btn left" onclick="moveCarousel('Animating mechanical systems with commercial video models', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/Animating mechanical systems with commercial video models/0_ray314.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('Animating mechanical systems with commercial video models', 1)">&#10095;</button>
+                        <div class="slide-counter">1 / 6</div>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots-Animating mechanical systems with commercial video models">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('Animating mechanical systems with commercial video models', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('Animating mechanical systems with commercial video models', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('Animating mechanical systems with commercial video models', 2)" aria-label="Slide 3"></button><button class="carousel-dot" onclick="setCarouselIndex('Animating mechanical systems with commercial video models', 3)" aria-label="Slide 4"></button><button class="carousel-dot" onclick="setCarouselIndex('Animating mechanical systems with commercial video models', 4)" aria-label="Slide 5"></button><button class="carousel-dot" onclick="setCarouselIndex('Animating mechanical systems with commercial video models', 5)" aria-label="Slide 6"></button>
+                    </div>
+                    
+                    <div class="overview-action">
+                        <button class="btn-view-all" onclick="navigateToDataset('Animating mechanical systems with commercial video models')">View Full Examples &rarr;</button>
+                    </div>
+                </div>
+                
+            <div class="hierarchy-bar level-2-header">
+                Results of non-autoregressive simulation (Sec 4)
+            </div>
+            
+                <div class="overview-section" id="section-Results of non-autoregressive simulation (Sec 4)">
+                    
+                    <div class="overview-desc"></div>
+                    
+                    <div class="carousel-wrapper" id="carousel-Results of non-autoregressive simulation (Sec 4)">
+                        <button class="carousel-btn left" onclick="moveCarousel('Results of non-autoregressive simulation (Sec 4)', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/Results of non-autoregressive simulation (Sec 4)/0.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('Results of non-autoregressive simulation (Sec 4)', 1)">&#10095;</button>
+                        <div class="slide-counter">1 / 6</div>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots-Results of non-autoregressive simulation (Sec 4)">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('Results of non-autoregressive simulation (Sec 4)', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive simulation (Sec 4)', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive simulation (Sec 4)', 2)" aria-label="Slide 3"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive simulation (Sec 4)', 3)" aria-label="Slide 4"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive simulation (Sec 4)', 4)" aria-label="Slide 5"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive simulation (Sec 4)', 5)" aria-label="Slide 6"></button>
+                    </div>
+                    
+                    <div class="overview-action">
+                        <button class="btn-view-all" onclick="navigateToDataset('Results of non-autoregressive simulation (Sec 4)')">View Full Examples &rarr;</button>
+                    </div>
+                </div>
+                
+            <div class="hierarchy-bar level-2-header">
+                Results of autoregressive simulation (Sec 4)
+            </div>
+            
+                <div class="overview-section" id="section-Results of autoregressive simulation (Sec 4)">
+                    
+                    <div class="overview-desc"></div>
+                    
+                    <div class="carousel-wrapper" id="carousel-Results of autoregressive simulation (Sec 4)">
+                        <button class="carousel-btn left" onclick="moveCarousel('Results of autoregressive simulation (Sec 4)', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/Results of autoregressive simulation (Sec 4)/0.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('Results of autoregressive simulation (Sec 4)', 1)">&#10095;</button>
+                        <div class="slide-counter">1 / 11</div>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots-Results of autoregressive simulation (Sec 4)">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 2)" aria-label="Slide 3"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 3)" aria-label="Slide 4"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 4)" aria-label="Slide 5"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 5)" aria-label="Slide 6"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 6)" aria-label="Slide 7"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 7)" aria-label="Slide 8"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 8)" aria-label="Slide 9"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 9)" aria-label="Slide 10"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive simulation (Sec 4)', 10)" aria-label="Slide 11"></button>
+                    </div>
+                    
+                    <div class="overview-action">
+                        <button class="btn-view-all" onclick="navigateToDataset('Results of autoregressive simulation (Sec 4)')">View Full Examples &rarr;</button>
+                    </div>
+                </div>
+                
+            <div class="hierarchy-bar level-2-header">
+                Results of non-autoregressive design (Sec 5)
+            </div>
+            
+                <div class="overview-section" id="section-Results of non-autoregressive design (Sec 5)">
+                    
+                    <div class="overview-desc"></div>
+                    
+                    <div class="carousel-wrapper" id="carousel-Results of non-autoregressive design (Sec 5)">
+                        <button class="carousel-btn left" onclick="moveCarousel('Results of non-autoregressive design (Sec 5)', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/Results of non-autoregressive design (Sec 5)/0.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('Results of non-autoregressive design (Sec 5)', 1)">&#10095;</button>
+                        <div class="slide-counter">1 / 5</div>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots-Results of non-autoregressive design (Sec 5)">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('Results of non-autoregressive design (Sec 5)', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive design (Sec 5)', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive design (Sec 5)', 2)" aria-label="Slide 3"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive design (Sec 5)', 3)" aria-label="Slide 4"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of non-autoregressive design (Sec 5)', 4)" aria-label="Slide 5"></button>
+                    </div>
+                    
+                    <div class="overview-action">
+                        <button class="btn-view-all" onclick="navigateToDataset('Results of non-autoregressive design (Sec 5)')">View Full Examples &rarr;</button>
+                    </div>
+                </div>
+                
+            <div class="hierarchy-bar level-2-header">
+                Results of autoregressive design (Sec 5)
+            </div>
+            
+                <div class="overview-section" id="section-Results of autoregressive design (Sec 5)">
+                    
+                    <div class="overview-desc"></div>
+                    
+                    <div class="carousel-wrapper" id="carousel-Results of autoregressive design (Sec 5)">
+                        <button class="carousel-btn left" onclick="moveCarousel('Results of autoregressive design (Sec 5)', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/Results of autoregressive design (Sec 5)/0.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('Results of autoregressive design (Sec 5)', 1)">&#10095;</button>
+                        <div class="slide-counter">1 / 11</div>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots-Results of autoregressive design (Sec 5)">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 2)" aria-label="Slide 3"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 3)" aria-label="Slide 4"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 4)" aria-label="Slide 5"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 5)" aria-label="Slide 6"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 6)" aria-label="Slide 7"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 7)" aria-label="Slide 8"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 8)" aria-label="Slide 9"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 9)" aria-label="Slide 10"></button><button class="carousel-dot" onclick="setCarouselIndex('Results of autoregressive design (Sec 5)', 10)" aria-label="Slide 11"></button>
+                    </div>
+                    
+                    <div class="overview-action">
+                        <button class="btn-view-all" onclick="navigateToDataset('Results of autoregressive design (Sec 5)')">View Full Examples &rarr;</button>
+                    </div>
+                </div>
+                
+            <div class="hierarchy-bar level-2-header">
+                (Ablation) Results of non-autoregressive design with default time schedule
+            </div>
+            
+                <div class="overview-section" id="section-(Ablation) Results of non-autoregressive design with default time schedule">
+                    
+                    <div class="overview-desc"></div>
+                    
+                    <div class="carousel-wrapper" id="carousel-(Ablation) Results of non-autoregressive design with default time schedule">
+                        <button class="carousel-btn left" onclick="moveCarousel('(Ablation) Results of non-autoregressive design with default time schedule', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/(Ablation) Results of non-autoregressive design with default time schedule/0.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('(Ablation) Results of non-autoregressive design with default time schedule', 1)">&#10095;</button>
+                        <div class="slide-counter">1 / 6</div>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots-(Ablation) Results of non-autoregressive design with default time schedule">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('(Ablation) Results of non-autoregressive design with default time schedule', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of non-autoregressive design with default time schedule', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of non-autoregressive design with default time schedule', 2)" aria-label="Slide 3"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of non-autoregressive design with default time schedule', 3)" aria-label="Slide 4"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of non-autoregressive design with default time schedule', 4)" aria-label="Slide 5"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of non-autoregressive design with default time schedule', 5)" aria-label="Slide 6"></button>
+                    </div>
+                    
+                    <div class="overview-action">
+                        <button class="btn-view-all" onclick="navigateToDataset('(Ablation) Results of non-autoregressive design with default time schedule')">View Full Examples &rarr;</button>
+                    </div>
+                </div>
+                
+            <div class="hierarchy-bar level-2-header">
+                (Ablation) Results of autoregressive design with default time schedule
+            </div>
+            
+                <div class="overview-section" id="section-(Ablation) Results of autoregressive design with default time schedule">
+                    
+                    <div class="overview-desc"></div>
+                    
+                    <div class="carousel-wrapper" id="carousel-(Ablation) Results of autoregressive design with default time schedule">
+                        <button class="carousel-btn left" onclick="moveCarousel('(Ablation) Results of autoregressive design with default time schedule', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/(Ablation) Results of autoregressive design with default time schedule/0.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('(Ablation) Results of autoregressive design with default time schedule', 1)">&#10095;</button>
+                        <div class="slide-counter">1 / 20</div>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots-(Ablation) Results of autoregressive design with default time schedule">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 2)" aria-label="Slide 3"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 3)" aria-label="Slide 4"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 4)" aria-label="Slide 5"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 5)" aria-label="Slide 6"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 6)" aria-label="Slide 7"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 7)" aria-label="Slide 8"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 8)" aria-label="Slide 9"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 9)" aria-label="Slide 10"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 10)" aria-label="Slide 11"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 11)" aria-label="Slide 12"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 12)" aria-label="Slide 13"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 13)" aria-label="Slide 14"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 14)" aria-label="Slide 15"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 15)" aria-label="Slide 16"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 16)" aria-label="Slide 17"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 17)" aria-label="Slide 18"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 18)" aria-label="Slide 19"></button><button class="carousel-dot" onclick="setCarouselIndex('(Ablation) Results of autoregressive design with default time schedule', 19)" aria-label="Slide 20"></button>
+                    </div>
+                    
+                    <div class="overview-action">
+                        <button class="btn-view-all" onclick="navigateToDataset('(Ablation) Results of autoregressive design with default time schedule')">View Full Examples &rarr;</button>
+                    </div>
+                </div>
+                
+        </div>
+
+        <div id="cards-container" class="container"></div>
+
+        <div class="paper-footer">
+            <div style="font-weight: 600; margin-bottom: 10px;">Citation</div>
+            <div class="citation-block">
+@article{GearVDM,
+  title={Towards Designing and Simulating Mechanical Systems with Video Diffusion Models: A Study with 2D Gear Systems},
+  author={Anonymous Authors},
+  journal={Conference Name},
+  year={2026}
+}
+            </div>
+        </div>
+    </div>
+    
+    <div id="clustrmaps-widget-container">
+        <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=WfV9LOrp8VqQQUyz3EDGmVkM960W4w6fXyR9c-GDF0U&cl=ffffff&w=a"></script>
+    </div>
+
+</body>
+</html>
