@@ -32,7 +32,7 @@ except ImportError:
 #first frame: /work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/vis/43_loop_0_input_modality_0_reference.png
 #driving gear: /work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/vis/43_loop_0_input_modality_0.mp4
 #parsed: /work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/parsed/46_loop_0_modality_0/normalized_coordinate_gear_overlay.mp4
-good_examples = [58, 47, 50, 46, 57, 51, 52, 43, 44, 45, 48, 49, 53, 54, 55, 56, 95, 96, 97]
+good_examples = [58, 96, 47, 50, 46, 57, 51, 52, 43, 44, 45, 48, 49, 53, 54, 55, 56, 95, 97]
 examples = []
 base_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/"
 for g in good_examples:
@@ -40,7 +40,7 @@ for g in good_examples:
         ("First Frame (Condition)", os.path.join(base_path, "vis", f"{g}_loop_0_input_modality_0_reference.png")),
         ("Driving Gear (Condition)", os.path.join(base_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
         #/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/parsed/46_loop_0_modality_0/normalized_coordinate_gear_overlay.mp4
-        ("Generated Video (w/ parsed results)", os.path.join(base_path, "parsed", f"{g}_loop_0_modality_0", "normalized_coordinate_gear_overlay.mp4"))
+        ("Generated (w/ parsed results)", os.path.join(base_path, "parsed", f"{g}_loop_0_modality_0", "normalized_coordinate_gear_overlay.mp4"))
     ]
     examples.append([example])
 ################### Do not modify ###############################
@@ -87,7 +87,7 @@ def visualize(grid_inputs, output_path):
         border_cfg = {
             "First Frame (Condition)": (0, 0, 255),      # Blue border
             "Driving Gear (Condition)": (255, 0, 0),   # Red border
-            "Generated Video (w/ parsed results)": (255, 0, 0)    # Red border
+            "Generated (w/ parsed results)": (255, 0, 0)    # Red border
         }
         
         # Pass the border_colors argument to the stacker
