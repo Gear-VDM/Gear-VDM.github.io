@@ -74,11 +74,11 @@ SIDEBAR_CONFIG = [
     ("Motivation", [
         "Animating Mechanical Systems with Off-the-Shelf Commercial Video Models",
     ]),
-    ("Study1: Simulating gear systems", [
-        "Results of non-autoregressive simulation (Sec 4)",
+    ("Study1: Simulating gear systems (Sec 4)", [
+        "Non-autoregressive Simulation",
         "Results of autoregressive simulation (Sec 4)",
     ]),
-    ("Study2: Designing gear systems", [
+    ("Study2: Designing gear systems (Sec 5)", [
         "Results of non-autoregressive design (Sec 5)",
         "Results of autoregressive design (Sec 5)",
         "(Ablation) Results of non-autoregressive design with default time schedule",
@@ -150,8 +150,6 @@ DATASET_DESCRIPTIONS = {
     </div>
     """,
     "Ablation Study on Keyframes": "Unlike conventional point-track-conditioned image-to-video models that rely on the first frame, our model can be conditioned on arbitrary frames. As shown, it supports conditioning on the first, middle, or last frame of a video. Moreover, we achieve the best reconstruction performance by conditioning on four uniformly sampled reference frames.",
-    "Ablation Study on Non-keyframes": "Beyond keyframe conditioning, our model can be guided by reference images that do not exactly correspond to any generated frame. As shown, the model effectively retrieves relevant visual information from reference images to produce coherent videos.",
-    "Iterative Point-track Resampling" : "We provide a visual comparison of detected point-tracks obtained using our iterative resampling strategy (Appendix Algorithm 1) and uniform random sampling of point queries over the video frames. Our iterative resampling produces denser and more uniformly distributed point-tracks, achieving better spatial coverage with reduced sparsity.",
 }
 
 # --- HTML Template ---
