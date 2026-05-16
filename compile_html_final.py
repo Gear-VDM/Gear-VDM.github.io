@@ -31,7 +31,7 @@ if False:
     ]
 else:
     AUTHORS = [
-        ("Anonymous Authors", [0], ""),
+        ("Anonymous Authors", [0], "https://gear-vdm.github.io/"),
     ]
 
     INSTITUTIONS = [
@@ -39,8 +39,8 @@ else:
     ]
 
 
-ARXIV_LINK = ""
-CODE_LINK = ""
+ARXIV_LINK = "https://gear-vdm.github.io/"
+CODE_LINK = "https://gear-vdm.github.io/"
 
 
 ABSTRACT_TEXT = """
@@ -880,7 +880,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             <div class="paper-meta">
                 <div class="paper-authors">{authors_html}</div>
                 <div class="paper-institutions">{institutions_html}</div>
-                <div class="paper-venue">SIGGRAPH 2026</div>
+                <div class="paper-venue">Anonymous 2026</div>
                 <div class="link-buttons">{link_buttons_html}</div>
             </div>
         </header>
