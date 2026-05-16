@@ -72,7 +72,7 @@ Ultimately, our results suggest that while video DiTs possess a high potential f
 # The script automatically detects if an item is a "Group" (tuple with list) or "Single" (string)
 SIDEBAR_CONFIG = [
     ("Motivation", [
-        "Animating mechanical systems with commercial video models",
+        "Animation of Mechanical Systems with Off-the-Shelf Commercial Video Models",
     ]),
     ("Study1: Simulating gear systems", [
         "Results of non-autoregressive simulation (Sec 4)",
@@ -136,6 +136,19 @@ SIDEBAR_CONFIG = [
 
 DATASET_DESCRIPTIONS = {
     # --- DATASETS (Bottom Level) ---
+    "Animation of Mechanical Systems with Off-the-Shelf Commercial Video Models": """
+    <div>
+    <p>
+        In this work, we explore the capabilities of state-of-the-art video generative models built on Diffusion Transformers (DiTs) to simulate and design mechanical systems, using 2D gear systems as a testbed. 
+        We evaluate off-the-shelf commercial video models<sup>*</sup> on their ability to generate plausible gear interactions via first-frame conditioned video generation (I2V) tasks. 
+        While these models demonstrate remarkable visual fidelity, they struggle to synthesize animations that adhere to basic kinematic constraints, resulting in meshed gears with conflicting rotational directions and mismatched angular velocities.
+    </p>
+    
+    <p style="margin-top: 1em;">
+        <small><sup>*</sup>Videos were generated using <a href="https://lumalabs.ai" target="_blank" rel="noopener noreferrer">lumalabs.ai</a>.</small>
+    </p>
+    </div>
+    """,
     "Ablation Study on Keyframes": "Unlike conventional point-track-conditioned image-to-video models that rely on the first frame, our model can be conditioned on arbitrary frames. As shown, it supports conditioning on the first, middle, or last frame of a video. Moreover, we achieve the best reconstruction performance by conditioning on four uniformly sampled reference frames.",
     "Ablation Study on Non-keyframes": "Beyond keyframe conditioning, our model can be guided by reference images that do not exactly correspond to any generated frame. As shown, the model effectively retrieves relevant visual information from reference images to produce coherent videos.",
     "Iterative Point-track Resampling" : "We provide a visual comparison of detected point-tracks obtained using our iterative resampling strategy (Appendix Algorithm 1) and uniform random sampling of point queries over the video frames. Our iterative resampling produces denser and more uniformly distributed point-tracks, achieving better spatial coverage with reduced sparsity.",
