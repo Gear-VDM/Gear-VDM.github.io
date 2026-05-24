@@ -153,10 +153,12 @@ def resample_frames(frames, target_len, is_static):
     idxs = np.linspace(0, len(frames) - 1, target_len, dtype=int)
     return [frames[i] for i in idxs]
 
-def stack_videos(data_grid, output_filename="grid_output.mp4", border_colors=None):
+def stack_videos(data_grid, output_filename="grid_output.mp4", border_colors=None, target_fps=None):
     TARGET_W = 832
     TARGET_H = 480
-    TARGET_FPS = 15
+    if target_fps is None or target_fps <= 0:
+        target_fps = 15
+    TARGET_FPS = target_fps
     DEFAULT_STATIC_SECONDS = 1
     DEFAULT_FRAME_SHAPE = (TARGET_H, TARGET_W, 3)
 
