@@ -86,7 +86,7 @@ def visualize(grid_inputs, output_path):
         # --- NEW CODE: Define borders (RGB format) ---
         border_cfg = {
             "First Frame (Condition)": (0, 0, 255),      # Blue border
-            "Driving Gear (Condition)": (255, 0, 0),   # Red border
+            "Driving Gear (Condition)": (0, 0, 255),   # Red border
             "Generated (w/ parsed results)": (255, 0, 0)    # Red border
         }
         
