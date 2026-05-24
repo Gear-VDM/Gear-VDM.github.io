@@ -36,7 +36,7 @@ except ImportError:
     from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 #################### Good examples ##############################
-good_examples = [(45, 11), (46, 9), (47, 8), (48, 6), (49, 9), (4, 6)] # (50, ), (51, ), (52, ), (82, ), (83, ), (94, ), (95, ), (96, ), (97, ), (98, )] #(idx, loop_max)
+good_examples = [(45, 11), (46, 9), (47, 8), (48, 6), (49, 9), (4, 6), (50, 10), (51, 6), (52, 12), (82, 7), (83, 8), (94, 9), (95, 8), (96, 10), (97, 8), (98, 10)] #(idx, loop_max)
 examples = []
 base_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_Auto_HighNoise_SCRATCH_7500_MotionLowSCRATCHOnesidedWeight_8000_shift1_1.0_step32b/"
 vis_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/"
@@ -60,7 +60,7 @@ for (g, loop_max) in good_examples:
     examples.append(lis)
 
 BASE_FPS = 15
-SPEED_FACTOR = 2.0  # >1.0 speeds up, <1.0 slows down
+SPEED_FACTOR = 3.0  # >1.0 speeds up, <1.0 slows down
 SEQUENCE_BY_ROW = True  # Treat list-of-rows as a sequential series
 
 def get_white_video(output_path, width=832, height=480, duration=1.0, fps=15):
