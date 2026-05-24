@@ -74,11 +74,11 @@ SIDEBAR_CONFIG = [
     ("Motivation", [
         "Animating Mechanical Systems with Off-the-Shelf Commercial Video Models",
     ]),
-    ("Study 1: Simulating gear systems (Sec 4)", [
+    ("Study 1: Simulating Gear Systems (Sec 4)", [
         "Non-autoregressive Simulation",
-        "Results of autoregressive simulation (Sec 4)",
+        "Autoregressive Simulation",
     ]),
-    ("Study 2: Designing gear systems (Sec 5)", [
+    ("Study 2: Designing Gear Systems (Sec 5)", [
         "Results of non-autoregressive design (Sec 5)",
         "Results of autoregressive design (Sec 5)",
         "(Ablation) Results of non-autoregressive design with default time schedule",

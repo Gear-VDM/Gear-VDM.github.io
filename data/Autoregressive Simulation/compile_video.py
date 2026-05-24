@@ -36,22 +36,24 @@ except ImportError:
     from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 #################### Good examples ##############################
-good_examples = [(18, 4)] #(idx, loop_max)
+good_examples = [(45, 11), (46, 9), (47, 8), (48, 6), (49, 9), (4, 6)] # (50, ), (51, ), (52, ), (82, ), (83, ), (94, ), (95, ), (96, ), (97, ), (98, )] #(idx, loop_max)
 examples = []
-base_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_Auto_HighNoise_SCRATCH_4000_MotionLowSCRATCHOnesidedWeight_4000_shift1_1.0_step32b/"
+base_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_Auto_HighNoise_SCRATCH_7500_MotionLowSCRATCHOnesidedWeight_8000_shift1_1.0_step32b/"
+vis_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/"
+
 for (g, loop_max) in good_examples:
     lis = []
     for loop in range(loop_max + 1):
         if loop == loop_max:
             example = [
-                ("First Frame (Condition)", os.path.join(base_path, "vis", f"{g}_loop_0_input_modality_0_reference.png")),
-                ("Driving Gear (Condition)", os.path.join(base_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
+                ("First Frame (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0_reference.png")),
+                ("Driving Gear (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
                 ("Generated (w/ parsed results)", os.path.join(base_path, "parsed", f"{g}_loop_19_modality_0", "normalized_coordinate_gear_overlay.mp4"))
             ]
         else:
             example = [
-                ("First Frame (Condition)", os.path.join(base_path, "vis", f"{g}_loop_0_input_modality_0_reference.png")),
-                ("Driving Gear (Condition)", os.path.join(base_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
+                ("First Frame (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0_reference.png")),
+                ("Driving Gear (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
                 ("Generated", os.path.join(base_path, "results", f"{g}_loop_{loop}_modality_0.mp4"))
             ]
         lis.append([example])
@@ -148,7 +150,8 @@ def visualize(grid_inputs, output_path):
         # --- NEW CODE: Define borders (RGB format) ---
         border_cfg = {
             "First Frame (Condition)": (0, 0, 255),      # Blue border
-            "Driving Gear (Condition)": (0, 0, 255),   # Red border
+            "Driving Gear (Condition)": (0, 0, 255),   # Blue border
+            "Generated": (255, 0, 0), #Red border
             "Generated (w/ parsed results)": (255, 0, 0)    # Red border
         }
         
@@ -192,7 +195,7 @@ def visualize(grid_inputs, output_path):
         return None
 
 if __name__ == "__main__":
-    output_dir = "./../../video/trash/"
+    output_dir = "./../../video/Autoregressive Simulation/"
     os.makedirs(output_dir, exist_ok=True)
 
     for idx, example in tqdm(enumerate(examples), desc="Processing Examples"):
