@@ -1,6 +1,6 @@
 """
 How to run:
-    python compile_html_final.py --input_folder "./videos" 
+    python compile_html_final.py
 
 Input:
 ./video/
