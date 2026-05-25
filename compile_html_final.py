@@ -80,7 +80,7 @@ SIDEBAR_CONFIG = [
     ]),
     ("Study 2: Designing Gear Systems (Sec 5)", [
         "Non-autoregressive Design",
-        "Results of autoregressive design (Sec 5)",
+        "Autoregressive Design",
         "(Ablation) Results of non-autoregressive design with default time schedule",
         "(Ablation) Results of autoregressive design with default time schedule",
     ]),
