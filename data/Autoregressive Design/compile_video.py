@@ -36,7 +36,7 @@ except ImportError:
     from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 #################### Good examples ##############################
-good_examples = [(14, 20), (19, 20), (26, 20), (33, 20), (34, 20), (42, 20), (47, 20), (58, 20), (97, 20), (98, 20)]
+good_examples = [(58, 20), (47, 20), (14, 20), (19, 20), (26, 20), (42, 20), (97, 20)]
 examples = []
 base_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Gen_20/Gear_Gen_Angle_Rad_Con_HighNoiseAutoGen_Gear5_098_12000_Low5OnesidedWeight_12000_shift1_1.0_step32b/"
 vis_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/"
