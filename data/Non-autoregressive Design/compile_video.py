@@ -36,31 +36,34 @@ except ImportError:
     from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 #################### Good examples ##############################
-good_examples = [(45, 11), (46, 9), (47, 8), (48, 6), (49, 9), (4, 6), (50, 10), (51, 6), (52, 12), (82, 7), (83, 8), (94, 9), (95, 8), (96, 10), (97, 8), (98, 10)] #(idx, loop_max)
+good_examples = [20, 22, 35, 40, 44, 4, 58, 87, 95, 99, 9]
 examples = []
-base_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_Auto_HighNoise_SCRATCH_7500_MotionLowSCRATCHOnesidedWeight_8000_shift1_1.0_step32b/"
+base_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Gen_20/Gear_Gen_Normalize_Uncond_HighNoise_SCRATCH_DefaultWeight_12000_UncondLowSCRATCHOnesidedWeight_12000_shift1_1.0_step32b/"
 vis_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Motion_20/Gear_Motion_Normalize_HighNoise_18500_MotionLow_18500_shift1_1.0_step32b/"
 
-for (g, loop_max) in good_examples:
+for g in good_examples:
+    loop_max = 1
     lis = []
     for loop in range(loop_max + 1):
         if loop == loop_max:
+            continue
+            """
             example = [
-                ("First Frame (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0_reference.png")),
                 ("Driving Gear (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
-                ("Generated (w/ parsed results)", os.path.join(base_path, "parsed", f"{g}_loop_19_modality_0", "normalized_coordinate_gear_overlay.mp4"))
+                ("Generated (w/ parsed results)", os.path.join(base_path, "parsed", f"{g}_loop_0_modality_0", "normalized_coordinate_gear_overlay.mp4"))
             ]
+            """
         else:
             example = [
-                ("First Frame (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0_reference.png")),
                 ("Driving Gear (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
-                (f"Generated (Step {loop+1})", os.path.join(base_path, "results", f"{g}_loop_{loop}_modality_0.mp4"))
+                ("Generated", os.path.join(base_path, "results", f"{g}_loop_{loop}_modality_0.mp4")),
+                ("Generated (w/ parsed results)", os.path.join(base_path, "parsed", f"{g}_loop_0_modality_0", "normalized_coordinate_gear_overlay.mp4"))
             ]
         lis.append([example])
     examples.append(lis)
 
 BASE_FPS = 15
-SPEED_FACTOR = 3.0  # >1.0 speeds up, <1.0 slows down
+SPEED_FACTOR = 2.0  # >1.0 speeds up, <1.0 slows down
 SEQUENCE_BY_ROW = True  # Treat list-of-rows as a sequential series
 
 def get_white_video(output_path, width=832, height=480, duration=1.0, fps=15):
@@ -77,7 +80,12 @@ def get_white_video(output_path, width=832, height=480, duration=1.0, fps=15):
         return None
 
 def _is_cell(obj):
-    return isinstance(obj, (tuple, list)) and len(obj) == 2
+    if not isinstance(obj, (tuple, list)) or len(obj) != 2:
+        return False
+    name, path = obj
+    if not isinstance(name, str):
+        return False
+    return isinstance(path, (str, bytes, os.PathLike)) or path is None
 
 def _is_row(obj):
     if not isinstance(obj, list):
@@ -195,7 +203,7 @@ def visualize(grid_inputs, output_path):
         return None
 
 if __name__ == "__main__":
-    output_dir = "./../../video/Autoregressive Simulation/"
+    output_dir = "./../../video/Non-autoregressive Design/"
     os.makedirs(output_dir, exist_ok=True)
 
     for idx, example in tqdm(enumerate(examples), desc="Processing Examples"):
