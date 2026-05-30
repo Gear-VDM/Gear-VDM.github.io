@@ -147,8 +147,8 @@ DATASET_DESCRIPTIONS = {
     This setting evaluates whether a single generation process is sufficient for the VDM to reason about kinematic dependencies across the long-range interacting gear chains.
     """,
     "Autoregressive Simulation": """
-    The autoregressive formulation animates the system through an iterative generative process (i.e. reasoning steps). 
-    In each generation process, the model only animates gears adjacent to those whose motion has already been determined, progressively determining the motions.
+    The autoregressive formulation animates the system through an iterative generative process. 
+    In each generation process, the model only animates gears adjacent to those whose motion has already been determined.
     """,
     "Study 2: Designing Gear Systems (Sec 5)": """
     <div>
@@ -263,7 +263,7 @@ DATASET_DESCRIPTIONS = {
         </table>
     </div>
     <div class="table-note">
-        Performance Comparison of Non-Autoregressive and Autoregressive Formulations trained and inference on the specific number of gears. Lower values indicate better accuracy.
+        Performance Comparison of Non-Autoregressive and Autoregressive Formulations trained and inference on the specific number of gears. Lower values indicate better performance.
     </div>
     <p>
         Failure cases differ by formulation: Non-autoregressive simulation errors typically flip rotational parity for a subgraph of connected gears, while Autoregressive errors often compound after a mistaken intermediate step.
@@ -271,15 +271,31 @@ DATASET_DESCRIPTIONS = {
     </div>
     """,
     "Failure Cases of Non-autoregressive Simulation": """
+    <div>
+    <p>
     In non-autoregressive simulation, failures often occur at the subgraph level: a cluster of connected gears is assigned the wrong rotational parity, leading to spikes in kinematic error.
+    </p>
+    <p style="margin-top: 1em;">
+        <small> Note:In the visualization below, green circles denote correct gear movements relative to the ground truth, whereas blue circles denote incorrect motion. </small>
+    </p>
+    </div>
     """,
     "Failure Cases of Autoregressive Simulation": """
+    <div>
+    <p>
     In autoregressive simulation, mistakes in intermediate generation steps propagate across subsequent steps. Once a specific gear is assigned an incorrect movements, later steps inherit and amplify the error.
+    </p>
+    <p style="margin-top: 1em;">
+        <small> Note: In the visualization below, green circles denote correct gear movements relative to the ground truth, whereas blue circles denote incorrect motion. </small>
+    </p>
+    </div>
     """,
     "Generalization to Unseen Complexity": """
     <div>
     <p>
-        We measure zero-shot generalization by training on a maximum gear count and evaluating on larger mechanisms. Performance drops when inference complexity exceeds training complexity for both NAR and AR, indicating limited length generalization in gear-chain reasoning.
+        We evaluate zero-shot generalization to unseen gear counts by training and testing on differing numbers of gears. 
+        When the complexity at inference exceeds that of the training set, performance degrades unpredictably for both non-autoregressive and autoregressive simulations. 
+        This drop highlights the necessity of aligning training data distribution with expected inference complexity to guarantee robust performance.
     </p>
     <div class="table-wrap">
         <table class="latex-table heatmap-generalization">
