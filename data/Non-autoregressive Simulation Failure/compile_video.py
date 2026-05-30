@@ -311,7 +311,7 @@ def visualize(grid_inputs, output_path):
         return None
 
 if __name__ == "__main__":
-    output_dir = "./../../video/Failure Cases of Non-autoregressive Design/"
+    output_dir = "./../../video/Failure Cases of Non-autoregressive Simulation/"
     os.makedirs(output_dir, exist_ok=True)
 
     for idx, example in tqdm(enumerate(examples), desc="Processing Examples"):
