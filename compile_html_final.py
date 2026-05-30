@@ -72,11 +72,18 @@ Ultimately, our results suggest that while video DiTs possess a high potential f
 # The script automatically detects if an item is a "Group" (tuple with list) or "Single" (string)
 SIDEBAR_CONFIG = [
     ("Motivation", [
-        "Animating Mechanical Systems with Off-the-Shelf Commercial Video Models",
+        "Animating Gear Systems with Commercial Video Models",
     ]),
     ("Study 1: Simulating Gear Systems (Sec 4)", [
         "Non-autoregressive Simulation",
         "Autoregressive Simulation",
+        (
+            "Non-autoregressive vs Autoregressive Simulation",
+            [
+                "Failure Cases of Non-autoregressive Design"
+                "Failure Cases of Autoregressive Simulation",
+            ]
+        ),
     ]),
     ("Study 2: Designing Gear Systems (Sec 5)", [
         "Non-autoregressive Design",
@@ -114,7 +121,7 @@ SIDEBAR_CONFIG = [
 
 DATASET_DESCRIPTIONS = {
     # --- DATASETS (Bottom Level) ---
-    "Animating Mechanical Systems with Off-the-Shelf Commercial Video Models": """
+    "Animating Gear Systems with Commercial Video Models": """
     <div>
     <p>
         In this work, we explore the capabilities of state-of-the-art video generative models built on Diffusion Transformers (DiTs) to simulate and design mechanical systems, using 2D gear systems as a testbed. 

@@ -98,7 +98,7 @@ def visualize(grid_inputs, output_path):
         return None
 
 if __name__ == "__main__":
-    output_dir = "./../../video/Animating Mechanical Systems with Off-the-Shelf Commercial Video Models/"
+    output_dir = "./../../video/Animating Gear Systems with Commercial Video Models/"
     os.makedirs(output_dir, exist_ok=True)
 
     for idx, example in tqdm(enumerate(examples), desc="Processing Examples"):
