@@ -77,13 +77,10 @@ SIDEBAR_CONFIG = [
     ("Study 1: Simulating Gear Systems (Sec 4)", [
         "Non-autoregressive Simulation",
         "Autoregressive Simulation",
-        (
-            "Non-autoregressive vs Autoregressive Simulation",
-            [
-                "Failure Cases of Non-autoregressive Design"
-                "Failure Cases of Autoregressive Simulation",
-            ]
-        ),
+        ("Non-autoregressive vs Autoregressive Simulation", [
+            "Failure Cases of Non-autoregressive Design",
+            "Failure Cases of Autoregressive Simulation",
+        ]),
     ]),
     ("Study 2: Designing Gear Systems (Sec 5)", [
         "Non-autoregressive Design",
