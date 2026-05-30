@@ -130,18 +130,19 @@ DATASET_DESCRIPTIONS = {
     "Study 1: Simulating Gear Systems (Sec 4)": """
     <div>
     <p>
-        In the simulation task, the model receives a static image of a gear train's spatial layout and a conditioning video of a single driving gear. 
-        The objective is to synthesize the motion of the remaining gears while adhering to the kinematic constraints of meshing pairs. 
-        We study both non-autoregressive and autoregressive generation to assess the VDM's ability to reason about individual gear motion across long gear chains.
+        In the simulation task, the model receives the <b>initial spatial layout</b> of a gear system at the first frame and a conditioning video of <b>a single driving gear</b>. 
+        The objective is to simulate the motion of the remaining gears while adhering to the kinematic constraints of meshing pairs. 
+        We study both non-autoregressive and autoregressive formulations to assess the VDM's ability to reason about individual gear motion across long chains of gear interactions.
     </p>
     </div>
     """,
     "Non-autoregressive Simulation": """
-    The non-autoregressive formulation generates the entire animated mechanism in a single generation pass. 
-    This setting probes whether a single forward pass can capture long-range kinematic dependencies across the contact graph.
+    The non-autoregressive formulation animates the entire gear mechanism simultaneously in a single generation process. 
+    This setting evaluates whether a single generation process is sufficient for the VDM to reason about long-range kinematic dependencies across the interacting gear chains.
     """,
     "Autoregressive Simulation": """
-    The autoregressive formulation animates gears in several reasoning steps, where each step targets gears adjacent to ones whose motion is already determined. 
+    The autoregressive formulation animates the system through an iterative generative process. 
+    In each generation process, the model only animates gears adjacent to those whose motion has already been determined, progressively determining the motions.
     """,
     "Study 2: Designing Gear Systems (Sec 5)": """
     <div>
