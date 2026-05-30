@@ -283,7 +283,7 @@ DATASET_DESCRIPTIONS = {
     "Failure Cases of Autoregressive Simulation": """
     <div>
     <p>
-    In autoregressive simulation, mistakes in intermediate generation steps propagate across subsequent steps. Once a specific gear is assigned an incorrect movements, later steps inherit and amplify the error.
+    The autoregressive simulation suffers from error accumulation. Once a specific gear is assigned an incorrect movements, later steps inherit and amplify the error.
     </p>
     <p style="margin-top: 1em;">
         <small> Note: In the visualization below, green circles denote correct gear movements relative to the ground truth, whereas blue circles denote incorrect motion. </small>
