@@ -169,7 +169,7 @@ DATASET_DESCRIPTIONS = {
     <div>
     <p>
         The table below summarizes simulation accuracy for non-autoregressive and autoregressive formulations. 
-        Overall, both achieve similar fidelity across metrics.
+        Overall, both achieve similar performance across metrics.
     </p>
     <div class="table-wrap">
         <table class="latex-table">
