@@ -89,28 +89,6 @@ SIDEBAR_CONFIG = [
 
 """
 SIDEBAR_CONFIG = [
-    ("Applications", [
-        "Multi-Reference-driven Restylization",
-        ("Mesh-driven Compositing", ["Keyframe-driven Mesh Stylization", 
-                              "Multi-Reference-driven Mesh Compositing"]
-        ),
-        "Keypoint-driven Compositing",
-        ("Static Scene Camera Control", [
-            "Multi-Reference-driven Camera Control in Static Scene",
-            "360° Camera Orbit in a Static Scene",
-            #"Time Slice Effect"
-        ]),
-        "Camera Retargeting in Dynamic Scene",
-        # Single item treated as Level 2 (No Level 3 children)
-        ("Temporal Stabilization", [
-            "Albedo",
-            "Shading Estimates"
-        ])
-    ]),
-    ("Baseline Comparison", [
-        "First-Frame-driven Reconstruction",
-        "First-Frame-driven Restylization",
-    ]),
     ("Ablation Study", [
         ("Model Design",
          ["Ablation Study on Model Design",
@@ -149,7 +127,37 @@ DATASET_DESCRIPTIONS = {
     </p>
     </div>
     """,
-    "Ablation Study on Keyframes": "Unlike conventional point-track-conditioned image-to-video models that rely on the first frame, our model can be conditioned on arbitrary frames. As shown, it supports conditioning on the first, middle, or last frame of a video. Moreover, we achieve the best reconstruction performance by conditioning on four uniformly sampled reference frames.",
+    "Study 1: Simulating Gear Systems (Sec 4)": """
+    <div>
+    <p>
+        In the simulation task, the model receives a static image of a gear train's spatial layout and a conditioning video of a single driving gear. 
+        The objective is to synthesize the motion of the remaining gears while adhering to the kinematic constraints of meshing pairs. 
+        We study both non-autoregressive and autoregressive generation to assess the VDM's ability to reason about individual gear motion across long gear chains.
+    </p>
+    </div>
+    """,
+    "Non-autoregressive Simulation": """
+    The non-autoregressive formulation generates the entire animated mechanism in a single generation pass. 
+    This setting probes whether a single forward pass can capture long-range kinematic dependencies across the contact graph.
+    """,
+    "Autoregressive Simulation": """
+    The autoregressive formulation animates gears in several reasoning steps, where each step targets gears adjacent to ones whose motion is already determined. 
+    """,
+    "Study 2: Designing Gear Systems (Sec 5)": """
+    <div>
+    <p>
+        In the design task, the model is conditioned solely on a video of a single driving gear and must synthesize a complete, functional mechanism. 
+        We evaluate whether the VDM can learn to generate gear systems that form a valid tree topology while satisfying kinematic constraints. 
+        Similar to Study 1, we compare the performance of non-autoregressive and autoregressive formulations.
+    </p>
+    </div>
+    """,
+    "Non-autoregressive Design": """
+    The non-autoregressive formulation synthesizes the entire multi-gear system simultaneously in a single generation pass.
+    """,
+    "Autoregressive Design": """
+    The autoregressive formulation constructs the mechanism iteratively, adding a new gear that meshes with the existing system at each step.
+    """,
 }
 
 # --- HTML Template ---
@@ -1101,6 +1109,14 @@ def generate_single_index(input_folder):
             {category_name}
         </div>
         '''
+
+        category_desc = DATASET_DESCRIPTIONS.get(category_name, "")
+        if category_desc:
+            overview_html += (
+                f'<div class="dataset-description" style="margin-bottom: 30px; text-align: left;">'
+                f'{category_desc}'
+                f'</div>'
+            )
         
         for sub_name, d_list, is_group in sub_items:
             overview_html += f'''
