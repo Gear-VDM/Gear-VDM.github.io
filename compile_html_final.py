@@ -136,7 +136,7 @@ DATASET_DESCRIPTIONS = {
     "Study 1: Simulating Gear Systems (Sec 4)": """
     <div>
     <p>
-        In the simulation task, the model receives the <b>initial spatial layout</b> of a gear system at the first frame and a conditioning video of <b>a single driving gear</b>. 
+        In the simulation task, the model takes the <b>spatial layout of a gear system</b> at the first frame and a conditioning video of <b>a single driving gear</b> as inputs. 
         The objective is to simulate the motion of the remaining gears while adhering to the kinematic constraints of meshing pairs. 
         We study both non-autoregressive and autoregressive formulations to assess the VDM's ability to reason about individual gear motion across long chains of gear interactions.
     </p>
@@ -194,26 +194,26 @@ DATASET_DESCRIPTIONS = {
                 <tr class="midrule">
                     <td rowspan="2">5</td>
                     <td>Non-autoregressive</td>
-                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0"><span class="u">0.0000</span></td>
                     <td data-value="0.0085"><span class="u">0.0085</span></td>
-                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0"><span class="u">0.0000</span></td>
                     <td data-value="0.0497"><span class="u">0.0497</span></td>
                     <td data-value="0.0475">0.0475</td>
                 </tr>
                 <tr>
                     <td>Autoregressive</td>
-                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0"><span class="u">0.0000</span></td>
                     <td data-value="0.0115">0.0115</td>
-                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0"><span class="u">0.0000</span></td>
                     <td data-value="0.0660">0.0660</td>
                     <td data-value="0.0402"><span class="u">0.0402</span></td>
                 </tr>
                 <tr class="midrule">
                     <td rowspan="2">10</td>
                     <td>Non-autoregressive</td>
-                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0"><span class="u">0.0000</span></td>
                     <td data-value="0.0223"><span class="u">0.0223</span></td>
-                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0"><span class="u">0.0000</span></td>
                     <td data-value="0.1349">0.1349</td>
                     <td data-value="0.0539">0.0539</td>
                 </tr>
