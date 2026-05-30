@@ -78,8 +78,10 @@ SIDEBAR_CONFIG = [
         "Non-autoregressive Simulation",
         "Autoregressive Simulation",
         ("Non-autoregressive vs Autoregressive Simulation", [
-            "Failure Cases of Non-autoregressive Design",
+            "Quantitative Comparisons",
+            "Failure Cases of Non-autoregressive Simulation",
             "Failure Cases of Autoregressive Simulation",
+            "Generalization to Unseen Complexity",
         ]),
     ]),
     ("Study 2: Designing Gear Systems (Sec 5)", [
@@ -163,6 +165,204 @@ DATASET_DESCRIPTIONS = {
     "Autoregressive Design": """
     The autoregressive design progressively constructs the mechanism, adding a new gear that meshes with the existing system at each step.
     """,
+    "Quantitative Comparisons": """
+    <div>
+    <p>
+        The table below summarizes simulation accuracy for non-autoregressive and autoregressive formulations. 
+        Overall, both achieve similar fidelity across metrics.
+    </p>
+    <div class="table-wrap">
+        <table class="latex-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th colspan="2" class="center cmid">Physical Correctness</th>
+                    <th colspan="3" class="center cmid">Fidelity to GT</th>
+                </tr>
+                <tr class="headrule">
+                    <th># of Gears</th>
+                    <th>Formulation</th>
+                    <th>E<sub>topo</sub> &darr;</th>
+                    <th>E<sub>kine</sub> &darr;</th>
+                    <th>E<sup>GT</sup><sub>topo</sub> &darr;</th>
+                    <th>E<sup>GT</sup><sub>kine</sub> &darr;</th>
+                    <th>E<sup>GT</sup><sub>spat</sub> &darr;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="midrule">
+                    <td rowspan="2">5</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0085"><span class="u">0.0085</span></td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0497"><span class="u">0.0497</span></td>
+                    <td data-value="0.0475">0.0475</td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0115">0.0115</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0660">0.0660</td>
+                    <td data-value="0.0402"><span class="u">0.0402</span></td>
+                </tr>
+                <tr class="midrule">
+                    <td rowspan="2">10</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0223"><span class="u">0.0223</span></td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.1349">0.1349</td>
+                    <td data-value="0.0539">0.0539</td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.001">0.001</td>
+                    <td data-value="0.0285">0.0285</td>
+                    <td data-value="0.001">0.001</td>
+                    <td data-value="0.1307"><span class="u">0.1307</span></td>
+                    <td data-value="0.0401"><span class="u">0.0401</span></td>
+                </tr>
+                <tr class="midrule">
+                    <td rowspan="2">15</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0007">0.0007</td>
+                    <td data-value="0.0224"><span class="u">0.0224</span></td>
+                    <td data-value="0.0013">0.0013</td>
+                    <td data-value="0.1046"><span class="u">0.1046</span></td>
+                    <td data-value="0.0441"><span class="u">0.0441</span></td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.0000"><span class="u">0.0000</span></td>
+                    <td data-value="0.0352">0.0352</td>
+                    <td data-value="0.0000"><span class="u">0.0000</span></td>
+                    <td data-value="0.1357">0.1357</td>
+                    <td data-value="0.0732">0.0732</td>
+                </tr>
+                <tr class="midrule">
+                    <td rowspan="2">20</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0005">0.0005</td>
+                    <td data-value="0.0427">0.0427</td>
+                    <td data-value="0.0005">0.0005</td>
+                    <td data-value="0.1829"><span class="u">0.1829</span></td>
+                    <td data-value="0.0670"><span class="u">0.0670</span></td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.0000"><span class="u">0.0000</span></td>
+                    <td data-value="0.0396"><span class="u">0.0396</span></td>
+                    <td data-value="0.0005"><span class="u">0.0005</span></td>
+                    <td data-value="0.1945">0.1945</td>
+                    <td data-value="0.0679">0.0679</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-note">
+        Performance Comparison of Non-Autoregressive and Autoregressive Formulations trained and inference on the specific number of gears. Lower values indicate better accuracy.
+    </div>
+    <p>
+        Failure cases differ by formulation: Non-autoregressive simulation errors typically flip rotational parity for a subgraph of connected gears, while Autoregressive errors often compound after a mistaken intermediate step.
+    </p>
+    </div>
+    """,
+    "Failure Cases of Non-autoregressive Simulation": """
+    In non-autoregressive simulation, failures often occur at the subgraph level: a cluster of connected gears is assigned the wrong rotational parity, leading to spikes in kinematic error.
+    """,
+    "Failure Cases of Autoregressive Simulation": """
+    In autoregressive simulation, mistakes in intermediate generation steps propagate across subsequent steps. Once a specific gear is assigned an incorrect movements, later steps inherit and amplify the error.
+    """,
+    "Generalization to Unseen Complexity": """
+    <div>
+    <p>
+        We measure zero-shot generalization by training on a maximum gear count and evaluating on larger mechanisms. Performance drops when inference complexity exceeds training complexity for both NAR and AR, indicating limited length generalization in gear-chain reasoning.
+    </p>
+    <div class="table-wrap">
+        <table class="latex-table heatmap-generalization">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Metric:</th>
+                    <th colspan="4" class="center cmid">Non-autoregressive</th>
+                    <th colspan="4" class="center cmid sep-left">Autoregressive</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>E<sup>GT</sup><sub>kine</sub> &darr;</th>
+                    <th colspan="4" class="center">Inference</th>
+                    <th colspan="4" class="center sep-left">Inference</th>
+                </tr>
+                <tr class="headrule">
+                    <th></th>
+                    <th></th>
+                    <th>5 Gears</th>
+                    <th>10 Gears</th>
+                    <th>15 Gears</th>
+                    <th>20 Gears</th>
+                    <th class="sep-left">5 Gears</th>
+                    <th>10 Gears</th>
+                    <th>15 Gears</th>
+                    <th>20 Gears</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="midrule">
+                    <th rowspan="4" class="vlabel">Train</th>
+                    <th scope="row">5 Gears</th>
+                    <td data-group="nar" data-value="0.0496">0.0496</td>
+                    <td data-group="nar" data-value="0.2481">0.2481</td>
+                    <td data-group="nar" data-value="0.4025">0.4025</td>
+                    <td data-group="nar" data-value="0.7964">0.7964</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0661">0.0661</td>
+                    <td data-group="ar" data-value="0.0584">0.0584</td>
+                    <td data-group="ar" data-value="0.1360">0.1360</td>
+                    <td data-group="ar" data-value="0.2383">0.2383</td>
+                </tr>
+                <tr>
+                    <th scope="row">10 Gears</th>
+                    <td data-group="nar" data-value="0.0534">0.0534</td>
+                    <td data-group="nar" data-value="0.1349">0.1349</td>
+                    <td data-group="nar" data-value="0.2103">0.2103</td>
+                    <td data-group="nar" data-value="0.3461">0.3461</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0758">0.0758</td>
+                    <td data-group="ar" data-value="0.1101">0.1101</td>
+                    <td data-group="ar" data-value="0.2137">0.2137</td>
+                    <td data-group="ar" data-value="0.2950">0.2950</td>
+                </tr>
+                <tr>
+                    <th scope="row">15 Gears</th>
+                    <td data-group="nar" data-value="0.0459">0.0459</td>
+                    <td data-group="nar" data-value="0.0562">0.0562</td>
+                    <td data-group="nar" data-value="0.1046">0.1046</td>
+                    <td data-group="nar" data-value="0.1676">0.1676</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0983">0.0983</td>
+                    <td data-group="ar" data-value="0.1108">0.1108</td>
+                    <td data-group="ar" data-value="0.1360">0.1360</td>
+                    <td data-group="ar" data-value="0.3076">0.3076</td>
+                </tr>
+                <tr>
+                    <th scope="row">20 Gears</th>
+                    <td data-group="nar" data-value="0.0512">0.0512</td>
+                    <td data-group="nar" data-value="0.0607">0.0607</td>
+                    <td data-group="nar" data-value="0.1853">0.1853</td>
+                    <td data-group="nar" data-value="0.1829">0.1829</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0916">0.0916</td>
+                    <td data-group="ar" data-value="0.0758">0.0758</td>
+                    <td data-group="ar" data-value="0.1185">0.1185</td>
+                    <td data-group="ar" data-value="0.1945">0.1945</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-note">
+        Zero-shot generalization across mechanism complexity. We report E<sup>GT</sup><sub>kine</sub> for models trained on a maximum gear count and evaluated at different inference counts.
+    </div>
+    </div>
+    """
 }
 
 # --- HTML Template ---
@@ -435,6 +635,51 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         h2.dataset-title {{ font-family: var(--font-stack); font-size: 1.6rem; font-weight: 400; color: var(--text-title); margin-bottom: 15px; border-bottom: 3px solid var(--primary-color); padding-bottom: 8px; display: inline-block; }}
         h3.content-subtitle {{ font-size: 1.4rem; color: #444; margin-top: 0; margin-bottom: 10px; font-weight: 600; }}
         .dataset-description {{ font-size: 1.05rem; color: var(--text-secondary); max-width: 800px; text-align: left; line-height: 1.7; margin: 0 auto 30px auto; padding: 0 20px; }}
+        .table-wrap {{ overflow-x: auto; }}
+        .table-note {{ font-size: 12px; color: #666; margin-top: 6px; }}
+        .latex-table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            border-top: 1px solid #d6d6d6;
+            border-bottom: 1px solid #d6d6d6;
+            background: #ffffff;
+        }}
+        .latex-table th, .latex-table td {{
+            padding: 8px 12px;
+            vertical-align: middle;
+            border-right: 1px solid #e2e2e2;
+        }}
+        .latex-table th {{
+            font-weight: 600;
+            color: #222;
+            background: #f5f5f5;
+        }}
+        .latex-table td {{ color: #333; }}
+        .latex-table td[data-value] {{ text-align: right; font-variant-numeric: tabular-nums; }}
+        .latex-table.heatmap td[data-value] {{ transition: background-color 0.2s ease; }}
+        .latex-table tr td:last-child, .latex-table tr th:last-child {{ border-right: none; }}
+        .latex-table .center {{ text-align: center; }}
+        .latex-table .cmid {{ border-bottom: 1px solid #d6d6d6; }}
+        .latex-table .headrule th {{ border-bottom: 1px solid #d6d6d6; }}
+        .latex-table .midrule td, .latex-table .midrule th {{ border-top: 1px solid #d6d6d6; }}
+        .latex-table .doublemid td, .latex-table .doublemid th {{ border-top: 1px solid #d6d6d6; }}
+        .latex-table .sep-left {{ border-left: 1px solid #d6d6d6; }}
+        .latex-table tbody tr:nth-child(odd) td {{ background: #ffffff; }}
+        .latex-table tbody tr:hover td {{ background: #f7f7f7; }}
+        .latex-table .u {{
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 2px;
+            text-decoration-color: #444;
+        }}
+        .latex-table .vlabel {{
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-align: center;
+            letter-spacing: 0.5px;
+            color: #222;
+        }}
 
         /* --- Overview Styling --- */
         .overview-container {{ width: 98%; max-width: 1600px; padding: 0 20px 100px 20px; display: none; box-sizing: border-box; margin: 0 auto; }}
@@ -632,6 +877,40 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 if (dots[activeIndex]) {{
                     dots[activeIndex].scrollIntoView({{ behavior: 'smooth', block: 'nearest', inline: 'center' }});
                 }}
+            }}
+
+            function applyHeatmap() {{
+                const tables = document.querySelectorAll('table.heatmap-generalization');
+                tables.forEach(table => {{
+                    const applyGroup = (groupName, exponent) => {{
+                        const cells = Array.from(
+                            table.querySelectorAll(`td[data-group="${{groupName}}"][data-value]`)
+                        );
+                        const values = cells
+                            .map(cell => parseFloat(cell.dataset.value))
+                            .filter(value => !Number.isNaN(value));
+                        if (!values.length) return;
+
+                        const min = Math.min(...values);
+                        const max = Math.max(...values);
+                        const denom = max - min || 1;
+                        const low = [236, 242, 234];
+                        const high = [252, 228, 230];
+
+                        cells.forEach(cell => {{
+                            const value = parseFloat(cell.dataset.value);
+                            if (Number.isNaN(value)) return;
+                            const t = Math.pow((value - min) / denom, exponent);
+                            const r = Math.round(low[0] + (high[0] - low[0]) * t);
+                            const g = Math.round(low[1] + (high[1] - low[1]) * t);
+                            const b = Math.round(low[2] + (high[2] - low[2]) * t);
+                            cell.style.backgroundColor = `rgb(${{r}}, ${{g}}, ${{b}})`;
+                        }});
+                    }};
+
+                    applyGroup('nar', 1.15);
+                    applyGroup('ar', 1.4);
+                }});
             }}
 
             window.setCarouselIndex = function(datasetName, newIndex) {{
@@ -852,6 +1131,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
                     renderPage(activePage);
                 }}
+
+                applyHeatmap();
             }}
 
             // --- HANDLE INITIAL LOAD VIA URL ---
@@ -1048,7 +1329,10 @@ def generate_single_index(input_folder):
                 sub_name = item
                 sub_datasets = [sub_name]
 
-            valid_subs = [d for d in sub_datasets if d in found_datasets]
+            valid_subs = [
+                d for d in sub_datasets
+                if d in found_datasets or d in DATASET_DESCRIPTIONS
+            ]
             
             if valid_subs:
                 if is_group:
@@ -1141,12 +1425,32 @@ def generate_single_index(input_folder):
                 files = sorted(glob.glob(os.path.join(d_path, "*.mp4")), key=sort_key)
                 rel_files = [os.path.join(input_folder, d_name, os.path.basename(f)) for f in files]
                 overview_videos_map[d_name] = rel_files
-                
-                if not rel_files: continue
-                
+
+                desc = DATASET_DESCRIPTIONS.get(d_name, "")
+
+                if not rel_files:
+                    if not desc:
+                        continue
+
+                    header_html = ""
+                    if is_group:
+                        header_html = f'''
+                        <div class="overview-section-header">
+                            <h4 class="level-3-header">{d_name}</h4>
+                        </div>
+                        '''
+
+                    section_html = f"""
+                    <div class="overview-section" id="section-{d_name}">
+                        {header_html}
+                        <div class="overview-desc">{desc}</div>
+                    </div>
+                    """
+                    overview_html += section_html
+                    continue
+
                 first_video = rel_files[0]
                 total_count = len(rel_files)
-                desc = DATASET_DESCRIPTIONS.get(d_name, "")
                 
                 header_html = ""
                 if is_group:

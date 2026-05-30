@@ -267,6 +267,51 @@
         h2.dataset-title { font-family: var(--font-stack); font-size: 1.6rem; font-weight: 400; color: var(--text-title); margin-bottom: 15px; border-bottom: 3px solid var(--primary-color); padding-bottom: 8px; display: inline-block; }
         h3.content-subtitle { font-size: 1.4rem; color: #444; margin-top: 0; margin-bottom: 10px; font-weight: 600; }
         .dataset-description { font-size: 1.05rem; color: var(--text-secondary); max-width: 800px; text-align: left; line-height: 1.7; margin: 0 auto 30px auto; padding: 0 20px; }
+        .table-wrap { overflow-x: auto; }
+        .table-note { font-size: 12px; color: #666; margin-top: 6px; }
+        .latex-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            border-top: 1px solid #d6d6d6;
+            border-bottom: 1px solid #d6d6d6;
+            background: #ffffff;
+        }
+        .latex-table th, .latex-table td {
+            padding: 8px 12px;
+            vertical-align: middle;
+            border-right: 1px solid #e2e2e2;
+        }
+        .latex-table th {
+            font-weight: 600;
+            color: #222;
+            background: #f5f5f5;
+        }
+        .latex-table td { color: #333; }
+        .latex-table td[data-value] { text-align: right; font-variant-numeric: tabular-nums; }
+        .latex-table.heatmap td[data-value] { transition: background-color 0.2s ease; }
+        .latex-table tr td:last-child, .latex-table tr th:last-child { border-right: none; }
+        .latex-table .center { text-align: center; }
+        .latex-table .cmid { border-bottom: 1px solid #d6d6d6; }
+        .latex-table .headrule th { border-bottom: 1px solid #d6d6d6; }
+        .latex-table .midrule td, .latex-table .midrule th { border-top: 1px solid #d6d6d6; }
+        .latex-table .doublemid td, .latex-table .doublemid th { border-top: 1px solid #d6d6d6; }
+        .latex-table .sep-left { border-left: 1px solid #d6d6d6; }
+        .latex-table tbody tr:nth-child(odd) td { background: #ffffff; }
+        .latex-table tbody tr:hover td { background: #f7f7f7; }
+        .latex-table .u {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 2px;
+            text-decoration-color: #444;
+        }
+        .latex-table .vlabel {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-align: center;
+            letter-spacing: 0.5px;
+            color: #222;
+        }
 
         /* --- Overview Styling --- */
         .overview-container { width: 98%; max-width: 1600px; padding: 0 20px 100px 20px; display: none; box-sizing: border-box; margin: 0 auto; }
@@ -396,10 +441,10 @@
             const toggleBtn = document.getElementById('sidebar-toggle');
             const body = document.body;
             
-            const overviewVideosMap = {"Animating Gear Systems with Commercial Video Models": ["./video/Animating Gear Systems with Commercial Video Models/0.mp4", "./video/Animating Gear Systems with Commercial Video Models/1.mp4", "./video/Animating Gear Systems with Commercial Video Models/2.mp4", "./video/Animating Gear Systems with Commercial Video Models/3.mp4"], "Non-autoregressive Simulation": ["./video/Non-autoregressive Simulation/0.mp4", "./video/Non-autoregressive Simulation/1.mp4", "./video/Non-autoregressive Simulation/2.mp4", "./video/Non-autoregressive Simulation/3.mp4", "./video/Non-autoregressive Simulation/4.mp4", "./video/Non-autoregressive Simulation/5.mp4", "./video/Non-autoregressive Simulation/6.mp4", "./video/Non-autoregressive Simulation/7.mp4", "./video/Non-autoregressive Simulation/8.mp4", "./video/Non-autoregressive Simulation/9.mp4", "./video/Non-autoregressive Simulation/10.mp4", "./video/Non-autoregressive Simulation/11.mp4", "./video/Non-autoregressive Simulation/12.mp4", "./video/Non-autoregressive Simulation/13.mp4", "./video/Non-autoregressive Simulation/14.mp4", "./video/Non-autoregressive Simulation/15.mp4", "./video/Non-autoregressive Simulation/16.mp4", "./video/Non-autoregressive Simulation/17.mp4", "./video/Non-autoregressive Simulation/18.mp4"], "Autoregressive Simulation": ["./video/Autoregressive Simulation/0.mp4", "./video/Autoregressive Simulation/1.mp4", "./video/Autoregressive Simulation/2.mp4", "./video/Autoregressive Simulation/3.mp4", "./video/Autoregressive Simulation/4.mp4", "./video/Autoregressive Simulation/5.mp4", "./video/Autoregressive Simulation/6.mp4", "./video/Autoregressive Simulation/7.mp4", "./video/Autoregressive Simulation/8.mp4", "./video/Autoregressive Simulation/9.mp4", "./video/Autoregressive Simulation/10.mp4", "./video/Autoregressive Simulation/11.mp4", "./video/Autoregressive Simulation/12.mp4", "./video/Autoregressive Simulation/13.mp4", "./video/Autoregressive Simulation/14.mp4", "./video/Autoregressive Simulation/15.mp4"], "Failure Cases of Non-autoregressive Design": ["./video/Failure Cases of Non-autoregressive Design/0.mp4", "./video/Failure Cases of Non-autoregressive Design/1.mp4", "./video/Failure Cases of Non-autoregressive Design/2.mp4"], "Failure Cases of Autoregressive Simulation": ["./video/Failure Cases of Autoregressive Simulation/0.mp4", "./video/Failure Cases of Autoregressive Simulation/1.mp4", "./video/Failure Cases of Autoregressive Simulation/2.mp4"], "Non-autoregressive Design": ["./video/Non-autoregressive Design/0.mp4", "./video/Non-autoregressive Design/1.mp4", "./video/Non-autoregressive Design/2.mp4", "./video/Non-autoregressive Design/3.mp4", "./video/Non-autoregressive Design/4.mp4", "./video/Non-autoregressive Design/5.mp4", "./video/Non-autoregressive Design/6.mp4", "./video/Non-autoregressive Design/7.mp4", "./video/Non-autoregressive Design/8.mp4", "./video/Non-autoregressive Design/9.mp4", "./video/Non-autoregressive Design/10.mp4"], "Autoregressive Design": ["./video/Autoregressive Design/0.mp4", "./video/Autoregressive Design/1.mp4", "./video/Autoregressive Design/2.mp4", "./video/Autoregressive Design/3.mp4", "./video/Autoregressive Design/4.mp4", "./video/Autoregressive Design/5.mp4", "./video/Autoregressive Design/6.mp4"], "(Ablation) Results of non-autoregressive design with default time schedule": ["./video/(Ablation) Results of non-autoregressive design with default time schedule/0.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/1.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/2.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/3.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/4.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/5.mp4"], "(Ablation) Results of autoregressive design with default time schedule": ["./video/(Ablation) Results of autoregressive design with default time schedule/0.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/1.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/2.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/3.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/4.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/5.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/6.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/7.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/8.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/9.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/10.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/11.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/12.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/13.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/14.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/15.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/16.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/17.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/18.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/19.mp4"]}; 
-            const datasetToPageMap = {"Animating Gear Systems with Commercial Video Models": "Animating Gear Systems with Commercial Video Models", "Non-autoregressive Simulation": "Non-autoregressive Simulation", "Autoregressive Simulation": "Autoregressive Simulation", "Failure Cases of Non-autoregressive Design": "Non-autoregressive vs Autoregressive Simulation", "Non-autoregressive vs Autoregressive Simulation": "Non-autoregressive vs Autoregressive Simulation", "Failure Cases of Autoregressive Simulation": "Non-autoregressive vs Autoregressive Simulation", "Non-autoregressive Design": "Non-autoregressive Design", "Autoregressive Design": "Autoregressive Design", "(Ablation) Results of non-autoregressive design with default time schedule": "(Ablation) Results of non-autoregressive design with default time schedule", "(Ablation) Results of autoregressive design with default time schedule": "(Ablation) Results of autoregressive design with default time schedule"}; 
-            const pageToFirstDatasetMap = {"Animating Gear Systems with Commercial Video Models": "Animating Gear Systems with Commercial Video Models", "Non-autoregressive Simulation": "Non-autoregressive Simulation", "Autoregressive Simulation": "Autoregressive Simulation", "Non-autoregressive vs Autoregressive Simulation": "Failure Cases of Non-autoregressive Design", "Non-autoregressive Design": "Non-autoregressive Design", "Autoregressive Design": "Autoregressive Design", "(Ablation) Results of non-autoregressive design with default time schedule": "(Ablation) Results of non-autoregressive design with default time schedule", "(Ablation) Results of autoregressive design with default time schedule": "(Ablation) Results of autoregressive design with default time schedule"};
-            const pagesData = {"Animating Gear Systems with Commercial Video Models": {"title": "Animating Gear Systems with Commercial Video Models", "description": "", "is_group": false, "blocks": [{"id": "Animating Gear Systems with Commercial Video Models", "description": "\n    <div>\n    <p>\n        In this work, we explore the capabilities of state-of-the-art video generative models built on Diffusion Transformers (DiTs) to simulate and design mechanical systems, using 2D gear systems as a testbed. \n        To start with, we first examine off-the-shelf commercial video generative models<sup>*</sup> on their ability to generate plausible gear interactions via first-frame conditioned video generation (I2V) tasks. \n        As shown below, while these models demonstrate remarkable visual fidelity, they struggle to adhere to basic kinematic constraints, resulting in meshed gears with conflicting rotational directions and mismatched angular velocities.\n    </p>\n    \n    <p style=\"margin-top: 1em;\">\n        <small><sup>*</sup>Videos were generated using <a href=\"https://lumalabs.ai\" target=\"_blank\" rel=\"noopener noreferrer\">lumalabs.ai</a>.</small>\n    </p>\n    </div>\n    ", "videos": [{"src": "./video/Animating Gear Systems with Commercial Video Models/0.mp4", "caption": ""}, {"src": "./video/Animating Gear Systems with Commercial Video Models/1.mp4", "caption": ""}, {"src": "./video/Animating Gear Systems with Commercial Video Models/2.mp4", "caption": ""}, {"src": "./video/Animating Gear Systems with Commercial Video Models/3.mp4", "caption": ""}]}]}, "Non-autoregressive Simulation": {"title": "Non-autoregressive Simulation", "description": "", "is_group": false, "blocks": [{"id": "Non-autoregressive Simulation", "description": "\n    The non-autoregressive formulation animates the entire gear mechanism simultaneously in a single generation process. \n    This setting evaluates whether a single generation process is sufficient for the VDM to reason about kinematic dependencies across the long-range interacting gear chains.\n    ", "videos": [{"src": "./video/Non-autoregressive Simulation/0.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/1.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/2.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/3.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/4.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/5.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/6.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/7.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/8.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/9.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/10.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/11.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/12.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/13.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/14.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/15.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/16.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/17.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/18.mp4", "caption": ""}]}]}, "Autoregressive Simulation": {"title": "Autoregressive Simulation", "description": "", "is_group": false, "blocks": [{"id": "Autoregressive Simulation", "description": "\n    The autoregressive formulation animates the system through an iterative generative process (i.e. reasoning steps). \n    In each generation process, the model only animates gears adjacent to those whose motion has already been determined, progressively determining the motions.\n    ", "videos": [{"src": "./video/Autoregressive Simulation/0.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/1.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/2.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/3.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/4.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/5.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/6.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/7.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/8.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/9.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/10.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/11.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/12.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/13.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/14.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/15.mp4", "caption": ""}]}]}, "Non-autoregressive vs Autoregressive Simulation": {"title": "Non-autoregressive vs Autoregressive Simulation", "description": "", "is_group": true, "blocks": [{"id": "Failure Cases of Non-autoregressive Design", "description": "", "videos": [{"src": "./video/Failure Cases of Non-autoregressive Design/0.mp4", "caption": ""}, {"src": "./video/Failure Cases of Non-autoregressive Design/1.mp4", "caption": ""}, {"src": "./video/Failure Cases of Non-autoregressive Design/2.mp4", "caption": ""}]}, {"id": "Failure Cases of Autoregressive Simulation", "description": "", "videos": [{"src": "./video/Failure Cases of Autoregressive Simulation/0.mp4", "caption": ""}, {"src": "./video/Failure Cases of Autoregressive Simulation/1.mp4", "caption": ""}, {"src": "./video/Failure Cases of Autoregressive Simulation/2.mp4", "caption": ""}]}]}, "Non-autoregressive Design": {"title": "Non-autoregressive Design", "description": "", "is_group": false, "blocks": [{"id": "Non-autoregressive Design", "description": "\n    The non-autoregressive design synthesizes the entire multi-gear system simultaneously in a single generation process.\n    ", "videos": [{"src": "./video/Non-autoregressive Design/0.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/1.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/2.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/3.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/4.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/5.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/6.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/7.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/8.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/9.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/10.mp4", "caption": ""}]}]}, "Autoregressive Design": {"title": "Autoregressive Design", "description": "", "is_group": false, "blocks": [{"id": "Autoregressive Design", "description": "\n    The autoregressive design progressively constructs the mechanism, adding a new gear that meshes with the existing system at each step.\n    ", "videos": [{"src": "./video/Autoregressive Design/0.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/1.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/2.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/3.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/4.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/5.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/6.mp4", "caption": ""}]}]}, "(Ablation) Results of non-autoregressive design with default time schedule": {"title": "(Ablation) Results of non-autoregressive design with default time schedule", "description": "", "is_group": false, "blocks": [{"id": "(Ablation) Results of non-autoregressive design with default time schedule", "description": "", "videos": [{"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/0.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/1.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/2.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/3.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/4.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/5.mp4", "caption": ""}]}]}, "(Ablation) Results of autoregressive design with default time schedule": {"title": "(Ablation) Results of autoregressive design with default time schedule", "description": "", "is_group": false, "blocks": [{"id": "(Ablation) Results of autoregressive design with default time schedule", "description": "", "videos": [{"src": "./video/(Ablation) Results of autoregressive design with default time schedule/0.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/1.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/2.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/3.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/4.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/5.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/6.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/7.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/8.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/9.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/10.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/11.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/12.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/13.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/14.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/15.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/16.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/17.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/18.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/19.mp4", "caption": ""}]}]}};
+            const overviewVideosMap = {"Animating Gear Systems with Commercial Video Models": ["./video/Animating Gear Systems with Commercial Video Models/0.mp4", "./video/Animating Gear Systems with Commercial Video Models/1.mp4", "./video/Animating Gear Systems with Commercial Video Models/2.mp4", "./video/Animating Gear Systems with Commercial Video Models/3.mp4"], "Non-autoregressive Simulation": ["./video/Non-autoregressive Simulation/0.mp4", "./video/Non-autoregressive Simulation/1.mp4", "./video/Non-autoregressive Simulation/2.mp4", "./video/Non-autoregressive Simulation/3.mp4", "./video/Non-autoregressive Simulation/4.mp4", "./video/Non-autoregressive Simulation/5.mp4", "./video/Non-autoregressive Simulation/6.mp4", "./video/Non-autoregressive Simulation/7.mp4", "./video/Non-autoregressive Simulation/8.mp4", "./video/Non-autoregressive Simulation/9.mp4", "./video/Non-autoregressive Simulation/10.mp4", "./video/Non-autoregressive Simulation/11.mp4", "./video/Non-autoregressive Simulation/12.mp4", "./video/Non-autoregressive Simulation/13.mp4", "./video/Non-autoregressive Simulation/14.mp4", "./video/Non-autoregressive Simulation/15.mp4", "./video/Non-autoregressive Simulation/16.mp4", "./video/Non-autoregressive Simulation/17.mp4", "./video/Non-autoregressive Simulation/18.mp4"], "Autoregressive Simulation": ["./video/Autoregressive Simulation/0.mp4", "./video/Autoregressive Simulation/1.mp4", "./video/Autoregressive Simulation/2.mp4", "./video/Autoregressive Simulation/3.mp4", "./video/Autoregressive Simulation/4.mp4", "./video/Autoregressive Simulation/5.mp4", "./video/Autoregressive Simulation/6.mp4", "./video/Autoregressive Simulation/7.mp4", "./video/Autoregressive Simulation/8.mp4", "./video/Autoregressive Simulation/9.mp4", "./video/Autoregressive Simulation/10.mp4", "./video/Autoregressive Simulation/11.mp4", "./video/Autoregressive Simulation/12.mp4", "./video/Autoregressive Simulation/13.mp4", "./video/Autoregressive Simulation/14.mp4", "./video/Autoregressive Simulation/15.mp4"], "Quantitative Comparisons": [], "Failure Cases of Non-autoregressive Simulation": ["./video/Failure Cases of Non-autoregressive Simulation/0.mp4", "./video/Failure Cases of Non-autoregressive Simulation/1.mp4", "./video/Failure Cases of Non-autoregressive Simulation/2.mp4"], "Failure Cases of Autoregressive Simulation": ["./video/Failure Cases of Autoregressive Simulation/0.mp4", "./video/Failure Cases of Autoregressive Simulation/1.mp4", "./video/Failure Cases of Autoregressive Simulation/2.mp4"], "Generalization to Unseen Complexity": [], "Non-autoregressive Design": ["./video/Non-autoregressive Design/0.mp4", "./video/Non-autoregressive Design/1.mp4", "./video/Non-autoregressive Design/2.mp4", "./video/Non-autoregressive Design/3.mp4", "./video/Non-autoregressive Design/4.mp4", "./video/Non-autoregressive Design/5.mp4", "./video/Non-autoregressive Design/6.mp4", "./video/Non-autoregressive Design/7.mp4", "./video/Non-autoregressive Design/8.mp4", "./video/Non-autoregressive Design/9.mp4", "./video/Non-autoregressive Design/10.mp4"], "Autoregressive Design": ["./video/Autoregressive Design/0.mp4", "./video/Autoregressive Design/1.mp4", "./video/Autoregressive Design/2.mp4", "./video/Autoregressive Design/3.mp4", "./video/Autoregressive Design/4.mp4", "./video/Autoregressive Design/5.mp4", "./video/Autoregressive Design/6.mp4"], "(Ablation) Results of non-autoregressive design with default time schedule": ["./video/(Ablation) Results of non-autoregressive design with default time schedule/0.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/1.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/2.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/3.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/4.mp4", "./video/(Ablation) Results of non-autoregressive design with default time schedule/5.mp4"], "(Ablation) Results of autoregressive design with default time schedule": ["./video/(Ablation) Results of autoregressive design with default time schedule/0.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/1.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/2.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/3.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/4.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/5.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/6.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/7.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/8.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/9.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/10.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/11.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/12.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/13.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/14.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/15.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/16.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/17.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/18.mp4", "./video/(Ablation) Results of autoregressive design with default time schedule/19.mp4"]}; 
+            const datasetToPageMap = {"Animating Gear Systems with Commercial Video Models": "Animating Gear Systems with Commercial Video Models", "Non-autoregressive Simulation": "Non-autoregressive Simulation", "Autoregressive Simulation": "Autoregressive Simulation", "Quantitative Comparisons": "Non-autoregressive vs Autoregressive Simulation", "Non-autoregressive vs Autoregressive Simulation": "Non-autoregressive vs Autoregressive Simulation", "Failure Cases of Non-autoregressive Simulation": "Non-autoregressive vs Autoregressive Simulation", "Failure Cases of Autoregressive Simulation": "Non-autoregressive vs Autoregressive Simulation", "Generalization to Unseen Complexity": "Non-autoregressive vs Autoregressive Simulation", "Non-autoregressive Design": "Non-autoregressive Design", "Autoregressive Design": "Autoregressive Design", "(Ablation) Results of non-autoregressive design with default time schedule": "(Ablation) Results of non-autoregressive design with default time schedule", "(Ablation) Results of autoregressive design with default time schedule": "(Ablation) Results of autoregressive design with default time schedule"}; 
+            const pageToFirstDatasetMap = {"Animating Gear Systems with Commercial Video Models": "Animating Gear Systems with Commercial Video Models", "Non-autoregressive Simulation": "Non-autoregressive Simulation", "Autoregressive Simulation": "Autoregressive Simulation", "Non-autoregressive vs Autoregressive Simulation": "Quantitative Comparisons", "Non-autoregressive Design": "Non-autoregressive Design", "Autoregressive Design": "Autoregressive Design", "(Ablation) Results of non-autoregressive design with default time schedule": "(Ablation) Results of non-autoregressive design with default time schedule", "(Ablation) Results of autoregressive design with default time schedule": "(Ablation) Results of autoregressive design with default time schedule"};
+            const pagesData = {"Animating Gear Systems with Commercial Video Models": {"title": "Animating Gear Systems with Commercial Video Models", "description": "", "is_group": false, "blocks": [{"id": "Animating Gear Systems with Commercial Video Models", "description": "\n    <div>\n    <p>\n        In this work, we explore the capabilities of state-of-the-art video generative models built on Diffusion Transformers (DiTs) to simulate and design mechanical systems, using 2D gear systems as a testbed. \n        To start with, we first examine off-the-shelf commercial video generative models<sup>*</sup> on their ability to generate plausible gear interactions via first-frame conditioned video generation (I2V) tasks. \n        As shown below, while these models demonstrate remarkable visual fidelity, they struggle to adhere to basic kinematic constraints, resulting in meshed gears with conflicting rotational directions and mismatched angular velocities.\n    </p>\n    \n    <p style=\"margin-top: 1em;\">\n        <small><sup>*</sup>Videos were generated using <a href=\"https://lumalabs.ai\" target=\"_blank\" rel=\"noopener noreferrer\">lumalabs.ai</a>.</small>\n    </p>\n    </div>\n    ", "videos": [{"src": "./video/Animating Gear Systems with Commercial Video Models/0.mp4", "caption": ""}, {"src": "./video/Animating Gear Systems with Commercial Video Models/1.mp4", "caption": ""}, {"src": "./video/Animating Gear Systems with Commercial Video Models/2.mp4", "caption": ""}, {"src": "./video/Animating Gear Systems with Commercial Video Models/3.mp4", "caption": ""}]}]}, "Non-autoregressive Simulation": {"title": "Non-autoregressive Simulation", "description": "", "is_group": false, "blocks": [{"id": "Non-autoregressive Simulation", "description": "\n    The non-autoregressive formulation animates the entire gear mechanism simultaneously in a single generation process. \n    This setting evaluates whether a single generation process is sufficient for the VDM to reason about kinematic dependencies across the long-range interacting gear chains.\n    ", "videos": [{"src": "./video/Non-autoregressive Simulation/0.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/1.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/2.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/3.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/4.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/5.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/6.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/7.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/8.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/9.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/10.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/11.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/12.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/13.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/14.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/15.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/16.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/17.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Simulation/18.mp4", "caption": ""}]}]}, "Autoregressive Simulation": {"title": "Autoregressive Simulation", "description": "", "is_group": false, "blocks": [{"id": "Autoregressive Simulation", "description": "\n    The autoregressive formulation animates the system through an iterative generative process (i.e. reasoning steps). \n    In each generation process, the model only animates gears adjacent to those whose motion has already been determined, progressively determining the motions.\n    ", "videos": [{"src": "./video/Autoregressive Simulation/0.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/1.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/2.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/3.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/4.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/5.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/6.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/7.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/8.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/9.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/10.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/11.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/12.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/13.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/14.mp4", "caption": ""}, {"src": "./video/Autoregressive Simulation/15.mp4", "caption": ""}]}]}, "Non-autoregressive vs Autoregressive Simulation": {"title": "Non-autoregressive vs Autoregressive Simulation", "description": "", "is_group": true, "blocks": [{"id": "Quantitative Comparisons", "description": "\n    <div>\n    <p>\n        The table below summarizes simulation accuracy for non-autoregressive and autoregressive formulations. \n        Overall, both achieve similar fidelity across metrics.\n    </p>\n    <div class=\"table-wrap\">\n        <table class=\"latex-table\">\n            <thead>\n                <tr>\n                    <th></th>\n                    <th></th>\n                    <th colspan=\"2\" class=\"center cmid\">Physical Correctness</th>\n                    <th colspan=\"3\" class=\"center cmid\">Fidelity to GT</th>\n                </tr>\n                <tr class=\"headrule\">\n                    <th># of Gears</th>\n                    <th>Formulation</th>\n                    <th>E<sub>topo</sub> &darr;</th>\n                    <th>E<sub>kine</sub> &darr;</th>\n                    <th>E<sup>GT</sup><sub>topo</sub> &darr;</th>\n                    <th>E<sup>GT</sup><sub>kine</sub> &darr;</th>\n                    <th>E<sup>GT</sup><sub>spat</sub> &darr;</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr class=\"midrule\">\n                    <td rowspan=\"2\">5</td>\n                    <td>Non-autoregressive</td>\n                    <td data-value=\"0.0\"><span class=\"u\">0.0</span></td>\n                    <td data-value=\"0.0085\"><span class=\"u\">0.0085</span></td>\n                    <td data-value=\"0.0\"><span class=\"u\">0.0</span></td>\n                    <td data-value=\"0.0497\"><span class=\"u\">0.0497</span></td>\n                    <td data-value=\"0.0475\">0.0475</td>\n                </tr>\n                <tr>\n                    <td>Autoregressive</td>\n                    <td data-value=\"0.0\"><span class=\"u\">0.0</span></td>\n                    <td data-value=\"0.0115\">0.0115</td>\n                    <td data-value=\"0.0\"><span class=\"u\">0.0</span></td>\n                    <td data-value=\"0.0660\">0.0660</td>\n                    <td data-value=\"0.0402\"><span class=\"u\">0.0402</span></td>\n                </tr>\n                <tr class=\"midrule\">\n                    <td rowspan=\"2\">10</td>\n                    <td>Non-autoregressive</td>\n                    <td data-value=\"0.0\"><span class=\"u\">0.0</span></td>\n                    <td data-value=\"0.0223\"><span class=\"u\">0.0223</span></td>\n                    <td data-value=\"0.0\"><span class=\"u\">0.0</span></td>\n                    <td data-value=\"0.1349\">0.1349</td>\n                    <td data-value=\"0.0539\">0.0539</td>\n                </tr>\n                <tr>\n                    <td>Autoregressive</td>\n                    <td data-value=\"0.001\">0.001</td>\n                    <td data-value=\"0.0285\">0.0285</td>\n                    <td data-value=\"0.001\">0.001</td>\n                    <td data-value=\"0.1307\"><span class=\"u\">0.1307</span></td>\n                    <td data-value=\"0.0401\"><span class=\"u\">0.0401</span></td>\n                </tr>\n                <tr class=\"midrule\">\n                    <td rowspan=\"2\">15</td>\n                    <td>Non-autoregressive</td>\n                    <td data-value=\"0.0007\">0.0007</td>\n                    <td data-value=\"0.0224\"><span class=\"u\">0.0224</span></td>\n                    <td data-value=\"0.0013\">0.0013</td>\n                    <td data-value=\"0.1046\"><span class=\"u\">0.1046</span></td>\n                    <td data-value=\"0.0441\"><span class=\"u\">0.0441</span></td>\n                </tr>\n                <tr>\n                    <td>Autoregressive</td>\n                    <td data-value=\"0.0000\"><span class=\"u\">0.0000</span></td>\n                    <td data-value=\"0.0352\">0.0352</td>\n                    <td data-value=\"0.0000\"><span class=\"u\">0.0000</span></td>\n                    <td data-value=\"0.1357\">0.1357</td>\n                    <td data-value=\"0.0732\">0.0732</td>\n                </tr>\n                <tr class=\"midrule\">\n                    <td rowspan=\"2\">20</td>\n                    <td>Non-autoregressive</td>\n                    <td data-value=\"0.0005\">0.0005</td>\n                    <td data-value=\"0.0427\">0.0427</td>\n                    <td data-value=\"0.0005\">0.0005</td>\n                    <td data-value=\"0.1829\"><span class=\"u\">0.1829</span></td>\n                    <td data-value=\"0.0670\"><span class=\"u\">0.0670</span></td>\n                </tr>\n                <tr>\n                    <td>Autoregressive</td>\n                    <td data-value=\"0.0000\"><span class=\"u\">0.0000</span></td>\n                    <td data-value=\"0.0396\"><span class=\"u\">0.0396</span></td>\n                    <td data-value=\"0.0005\"><span class=\"u\">0.0005</span></td>\n                    <td data-value=\"0.1945\">0.1945</td>\n                    <td data-value=\"0.0679\">0.0679</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n    <div class=\"table-note\">\n        Performance Comparison of Non-Autoregressive and Autoregressive Formulations trained and inference on the specific number of gears. Lower values indicate better accuracy.\n    </div>\n    <p>\n        Failure cases differ by formulation: Non-autoregressive simulation errors typically flip rotational parity for a subgraph of connected gears, while Autoregressive errors often compound after a mistaken intermediate step.\n    </p>\n    </div>\n    ", "videos": []}, {"id": "Failure Cases of Non-autoregressive Simulation", "description": "\n    In non-autoregressive simulation, failures often occur at the subgraph level: a cluster of connected gears is assigned the wrong rotational parity, leading to spikes in kinematic error.\n    ", "videos": [{"src": "./video/Failure Cases of Non-autoregressive Simulation/0.mp4", "caption": ""}, {"src": "./video/Failure Cases of Non-autoregressive Simulation/1.mp4", "caption": ""}, {"src": "./video/Failure Cases of Non-autoregressive Simulation/2.mp4", "caption": ""}]}, {"id": "Failure Cases of Autoregressive Simulation", "description": "\n    In autoregressive simulation, mistakes in intermediate generation steps propagate across subsequent steps. Once a specific gear is assigned an incorrect movements, later steps inherit and amplify the error.\n    ", "videos": [{"src": "./video/Failure Cases of Autoregressive Simulation/0.mp4", "caption": ""}, {"src": "./video/Failure Cases of Autoregressive Simulation/1.mp4", "caption": ""}, {"src": "./video/Failure Cases of Autoregressive Simulation/2.mp4", "caption": ""}]}, {"id": "Generalization to Unseen Complexity", "description": "\n    <div>\n    <p>\n        We measure zero-shot generalization by training on a maximum gear count and evaluating on larger mechanisms. Performance drops when inference complexity exceeds training complexity for both NAR and AR, indicating limited length generalization in gear-chain reasoning.\n    </p>\n    <div class=\"table-wrap\">\n        <table class=\"latex-table heatmap-generalization\">\n            <thead>\n                <tr>\n                    <th></th>\n                    <th>Metric:</th>\n                    <th colspan=\"4\" class=\"center cmid\">Non-autoregressive</th>\n                    <th colspan=\"4\" class=\"center cmid sep-left\">Autoregressive</th>\n                </tr>\n                <tr>\n                    <th></th>\n                    <th>E<sup>GT</sup><sub>kine</sub> &darr;</th>\n                    <th colspan=\"4\" class=\"center\">Inference</th>\n                    <th colspan=\"4\" class=\"center sep-left\">Inference</th>\n                </tr>\n                <tr class=\"headrule\">\n                    <th></th>\n                    <th></th>\n                    <th>5 Gears</th>\n                    <th>10 Gears</th>\n                    <th>15 Gears</th>\n                    <th>20 Gears</th>\n                    <th class=\"sep-left\">5 Gears</th>\n                    <th>10 Gears</th>\n                    <th>15 Gears</th>\n                    <th>20 Gears</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr class=\"midrule\">\n                    <th rowspan=\"4\" class=\"vlabel\">Train</th>\n                    <th scope=\"row\">5 Gears</th>\n                    <td data-group=\"nar\" data-value=\"0.0496\">0.0496</td>\n                    <td data-group=\"nar\" data-value=\"0.2481\">0.2481</td>\n                    <td data-group=\"nar\" data-value=\"0.4025\">0.4025</td>\n                    <td data-group=\"nar\" data-value=\"0.7964\">0.7964</td>\n                    <td class=\"sep-left\" data-group=\"ar\" data-value=\"0.0661\">0.0661</td>\n                    <td data-group=\"ar\" data-value=\"0.0584\">0.0584</td>\n                    <td data-group=\"ar\" data-value=\"0.1360\">0.1360</td>\n                    <td data-group=\"ar\" data-value=\"0.2383\">0.2383</td>\n                </tr>\n                <tr>\n                    <th scope=\"row\">10 Gears</th>\n                    <td data-group=\"nar\" data-value=\"0.0534\">0.0534</td>\n                    <td data-group=\"nar\" data-value=\"0.1349\">0.1349</td>\n                    <td data-group=\"nar\" data-value=\"0.2103\">0.2103</td>\n                    <td data-group=\"nar\" data-value=\"0.3461\">0.3461</td>\n                    <td class=\"sep-left\" data-group=\"ar\" data-value=\"0.0758\">0.0758</td>\n                    <td data-group=\"ar\" data-value=\"0.1101\">0.1101</td>\n                    <td data-group=\"ar\" data-value=\"0.2137\">0.2137</td>\n                    <td data-group=\"ar\" data-value=\"0.2950\">0.2950</td>\n                </tr>\n                <tr>\n                    <th scope=\"row\">15 Gears</th>\n                    <td data-group=\"nar\" data-value=\"0.0459\">0.0459</td>\n                    <td data-group=\"nar\" data-value=\"0.0562\">0.0562</td>\n                    <td data-group=\"nar\" data-value=\"0.1046\">0.1046</td>\n                    <td data-group=\"nar\" data-value=\"0.1676\">0.1676</td>\n                    <td class=\"sep-left\" data-group=\"ar\" data-value=\"0.0983\">0.0983</td>\n                    <td data-group=\"ar\" data-value=\"0.1108\">0.1108</td>\n                    <td data-group=\"ar\" data-value=\"0.1360\">0.1360</td>\n                    <td data-group=\"ar\" data-value=\"0.3076\">0.3076</td>\n                </tr>\n                <tr>\n                    <th scope=\"row\">20 Gears</th>\n                    <td data-group=\"nar\" data-value=\"0.0512\">0.0512</td>\n                    <td data-group=\"nar\" data-value=\"0.0607\">0.0607</td>\n                    <td data-group=\"nar\" data-value=\"0.1853\">0.1853</td>\n                    <td data-group=\"nar\" data-value=\"0.1829\">0.1829</td>\n                    <td class=\"sep-left\" data-group=\"ar\" data-value=\"0.0916\">0.0916</td>\n                    <td data-group=\"ar\" data-value=\"0.0758\">0.0758</td>\n                    <td data-group=\"ar\" data-value=\"0.1185\">0.1185</td>\n                    <td data-group=\"ar\" data-value=\"0.1945\">0.1945</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n    <div class=\"table-note\">\n        Zero-shot generalization across mechanism complexity. We report E<sup>GT</sup><sub>kine</sub> for models trained on a maximum gear count and evaluated at different inference counts.\n    </div>\n    </div>\n    ", "videos": []}]}, "Non-autoregressive Design": {"title": "Non-autoregressive Design", "description": "", "is_group": false, "blocks": [{"id": "Non-autoregressive Design", "description": "\n    The non-autoregressive design synthesizes the entire multi-gear system simultaneously in a single generation process.\n    ", "videos": [{"src": "./video/Non-autoregressive Design/0.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/1.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/2.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/3.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/4.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/5.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/6.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/7.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/8.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/9.mp4", "caption": ""}, {"src": "./video/Non-autoregressive Design/10.mp4", "caption": ""}]}]}, "Autoregressive Design": {"title": "Autoregressive Design", "description": "", "is_group": false, "blocks": [{"id": "Autoregressive Design", "description": "\n    The autoregressive design progressively constructs the mechanism, adding a new gear that meshes with the existing system at each step.\n    ", "videos": [{"src": "./video/Autoregressive Design/0.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/1.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/2.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/3.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/4.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/5.mp4", "caption": ""}, {"src": "./video/Autoregressive Design/6.mp4", "caption": ""}]}]}, "(Ablation) Results of non-autoregressive design with default time schedule": {"title": "(Ablation) Results of non-autoregressive design with default time schedule", "description": "", "is_group": false, "blocks": [{"id": "(Ablation) Results of non-autoregressive design with default time schedule", "description": "", "videos": [{"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/0.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/1.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/2.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/3.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/4.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of non-autoregressive design with default time schedule/5.mp4", "caption": ""}]}]}, "(Ablation) Results of autoregressive design with default time schedule": {"title": "(Ablation) Results of autoregressive design with default time schedule", "description": "", "is_group": false, "blocks": [{"id": "(Ablation) Results of autoregressive design with default time schedule", "description": "", "videos": [{"src": "./video/(Ablation) Results of autoregressive design with default time schedule/0.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/1.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/2.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/3.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/4.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/5.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/6.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/7.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/8.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/9.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/10.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/11.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/12.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/13.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/14.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/15.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/16.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/17.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/18.mp4", "caption": ""}, {"src": "./video/(Ablation) Results of autoregressive design with default time schedule/19.mp4", "caption": ""}]}]}};
 
             const carouselIndices = {};
 
@@ -464,6 +509,40 @@
                 if (dots[activeIndex]) {
                     dots[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }
+            }
+
+            function applyHeatmap() {
+                const tables = document.querySelectorAll('table.heatmap-generalization');
+                tables.forEach(table => {
+                    const applyGroup = (groupName, exponent) => {
+                        const cells = Array.from(
+                            table.querySelectorAll(`td[data-group="${groupName}"][data-value]`)
+                        );
+                        const values = cells
+                            .map(cell => parseFloat(cell.dataset.value))
+                            .filter(value => !Number.isNaN(value));
+                        if (!values.length) return;
+
+                        const min = Math.min(...values);
+                        const max = Math.max(...values);
+                        const denom = max - min || 1;
+                        const low = [236, 242, 234];
+                        const high = [252, 228, 230];
+
+                        cells.forEach(cell => {
+                            const value = parseFloat(cell.dataset.value);
+                            if (Number.isNaN(value)) return;
+                            const t = Math.pow((value - min) / denom, exponent);
+                            const r = Math.round(low[0] + (high[0] - low[0]) * t);
+                            const g = Math.round(low[1] + (high[1] - low[1]) * t);
+                            const b = Math.round(low[2] + (high[2] - low[2]) * t);
+                            cell.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+                        });
+                    };
+
+                    applyGroup('nar', 1.15);
+                    applyGroup('ar', 1.4);
+                });
             }
 
             window.setCarouselIndex = function(datasetName, newIndex) {
@@ -684,6 +763,8 @@
 
                     renderPage(activePage);
                 }
+
+                applyHeatmap();
             }
 
             // --- HANDLE INITIAL LOAD VIA URL ---
@@ -749,8 +830,10 @@
 <button class="dataset-btn level-2" data-target="Non-autoregressive Simulation" onclick="navigateToGroup('Non-autoregressive Simulation')">Non-autoregressive Simulation</button>
 <button class="dataset-btn level-2" data-target="Autoregressive Simulation" onclick="navigateToGroup('Autoregressive Simulation')">Autoregressive Simulation</button>
 <button class="dataset-btn level-2" data-target="Non-autoregressive vs Autoregressive Simulation" onclick="navigateToGroup('Non-autoregressive vs Autoregressive Simulation')">Non-autoregressive vs Autoregressive Simulation</button>
-<button class="dataset-btn level-3" data-target="Non-autoregressive vs Autoregressive Simulation" data-dataset="Failure Cases of Non-autoregressive Design" onclick="navigateToDataset('Failure Cases of Non-autoregressive Design')">Failure Cases of Non-autoregressive Design</button>
+<button class="dataset-btn level-3" data-target="Non-autoregressive vs Autoregressive Simulation" data-dataset="Quantitative Comparisons" onclick="navigateToDataset('Quantitative Comparisons')">Quantitative Comparisons</button>
+<button class="dataset-btn level-3" data-target="Non-autoregressive vs Autoregressive Simulation" data-dataset="Failure Cases of Non-autoregressive Simulation" onclick="navigateToDataset('Failure Cases of Non-autoregressive Simulation')">Failure Cases of Non-autoregressive Simulation</button>
 <button class="dataset-btn level-3" data-target="Non-autoregressive vs Autoregressive Simulation" data-dataset="Failure Cases of Autoregressive Simulation" onclick="navigateToDataset('Failure Cases of Autoregressive Simulation')">Failure Cases of Autoregressive Simulation</button>
+<button class="dataset-btn level-3" data-target="Non-autoregressive vs Autoregressive Simulation" data-dataset="Generalization to Unseen Complexity" onclick="navigateToDataset('Generalization to Unseen Complexity')">Generalization to Unseen Complexity</button>
 <div class="nav-category">Study 2: Designing Gear Systems (Sec 5)</div>
 <button class="dataset-btn level-2" data-target="Non-autoregressive Design" onclick="navigateToGroup('Non-autoregressive Design')">Non-autoregressive Design</button>
 <button class="dataset-btn level-2" data-target="Autoregressive Design" onclick="navigateToGroup('Autoregressive Design')">Autoregressive Design</button>
@@ -916,27 +999,142 @@ Ultimately, our results suggest that while video DiTs possess a high potential f
                 Non-autoregressive vs Autoregressive Simulation
             </div>
             
-                <div class="overview-section" id="section-Failure Cases of Non-autoregressive Design">
-                    
-                    <div class="overview-section-header">
-                        <h4 class="level-3-header">Failure Cases of Non-autoregressive Design</h4>
+                    <div class="overview-section" id="section-Quantitative Comparisons">
+                        
+                        <div class="overview-section-header">
+                            <h4 class="level-3-header">Quantitative Comparisons</h4>
+                        </div>
+                        
+                        <div class="overview-desc">
+    <div>
+    <p>
+        The table below summarizes simulation accuracy for non-autoregressive and autoregressive formulations. 
+        Overall, both achieve similar fidelity across metrics.
+    </p>
+    <div class="table-wrap">
+        <table class="latex-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th colspan="2" class="center cmid">Physical Correctness</th>
+                    <th colspan="3" class="center cmid">Fidelity to GT</th>
+                </tr>
+                <tr class="headrule">
+                    <th># of Gears</th>
+                    <th>Formulation</th>
+                    <th>E<sub>topo</sub> &darr;</th>
+                    <th>E<sub>kine</sub> &darr;</th>
+                    <th>E<sup>GT</sup><sub>topo</sub> &darr;</th>
+                    <th>E<sup>GT</sup><sub>kine</sub> &darr;</th>
+                    <th>E<sup>GT</sup><sub>spat</sub> &darr;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="midrule">
+                    <td rowspan="2">5</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0085"><span class="u">0.0085</span></td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0497"><span class="u">0.0497</span></td>
+                    <td data-value="0.0475">0.0475</td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0115">0.0115</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0660">0.0660</td>
+                    <td data-value="0.0402"><span class="u">0.0402</span></td>
+                </tr>
+                <tr class="midrule">
+                    <td rowspan="2">10</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.0223"><span class="u">0.0223</span></td>
+                    <td data-value="0.0"><span class="u">0.0</span></td>
+                    <td data-value="0.1349">0.1349</td>
+                    <td data-value="0.0539">0.0539</td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.001">0.001</td>
+                    <td data-value="0.0285">0.0285</td>
+                    <td data-value="0.001">0.001</td>
+                    <td data-value="0.1307"><span class="u">0.1307</span></td>
+                    <td data-value="0.0401"><span class="u">0.0401</span></td>
+                </tr>
+                <tr class="midrule">
+                    <td rowspan="2">15</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0007">0.0007</td>
+                    <td data-value="0.0224"><span class="u">0.0224</span></td>
+                    <td data-value="0.0013">0.0013</td>
+                    <td data-value="0.1046"><span class="u">0.1046</span></td>
+                    <td data-value="0.0441"><span class="u">0.0441</span></td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.0000"><span class="u">0.0000</span></td>
+                    <td data-value="0.0352">0.0352</td>
+                    <td data-value="0.0000"><span class="u">0.0000</span></td>
+                    <td data-value="0.1357">0.1357</td>
+                    <td data-value="0.0732">0.0732</td>
+                </tr>
+                <tr class="midrule">
+                    <td rowspan="2">20</td>
+                    <td>Non-autoregressive</td>
+                    <td data-value="0.0005">0.0005</td>
+                    <td data-value="0.0427">0.0427</td>
+                    <td data-value="0.0005">0.0005</td>
+                    <td data-value="0.1829"><span class="u">0.1829</span></td>
+                    <td data-value="0.0670"><span class="u">0.0670</span></td>
+                </tr>
+                <tr>
+                    <td>Autoregressive</td>
+                    <td data-value="0.0000"><span class="u">0.0000</span></td>
+                    <td data-value="0.0396"><span class="u">0.0396</span></td>
+                    <td data-value="0.0005"><span class="u">0.0005</span></td>
+                    <td data-value="0.1945">0.1945</td>
+                    <td data-value="0.0679">0.0679</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-note">
+        Performance Comparison of Non-Autoregressive and Autoregressive Formulations trained and inference on the specific number of gears. Lower values indicate better accuracy.
+    </div>
+    <p>
+        Failure cases differ by formulation: Non-autoregressive simulation errors typically flip rotational parity for a subgraph of connected gears, while Autoregressive errors often compound after a mistaken intermediate step.
+    </p>
+    </div>
+    </div>
                     </div>
                     
-                    <div class="overview-desc"></div>
+                <div class="overview-section" id="section-Failure Cases of Non-autoregressive Simulation">
                     
-                    <div class="carousel-wrapper" id="carousel-Failure Cases of Non-autoregressive Design">
-                        <button class="carousel-btn left" onclick="moveCarousel('Failure Cases of Non-autoregressive Design', -1)">&#10094;</button>
-                        <video class="lazy" data-src="./video/Failure Cases of Non-autoregressive Design/0.mp4" preload="none" muted autoplay loop playsinline></video>
-                        <button class="carousel-btn right" onclick="moveCarousel('Failure Cases of Non-autoregressive Design', 1)">&#10095;</button>
+                    <div class="overview-section-header">
+                        <h4 class="level-3-header">Failure Cases of Non-autoregressive Simulation</h4>
+                    </div>
+                    
+                    <div class="overview-desc">
+    In non-autoregressive simulation, failures often occur at the subgraph level: a cluster of connected gears is assigned the wrong rotational parity, leading to spikes in kinematic error.
+    </div>
+                    
+                    <div class="carousel-wrapper" id="carousel-Failure Cases of Non-autoregressive Simulation">
+                        <button class="carousel-btn left" onclick="moveCarousel('Failure Cases of Non-autoregressive Simulation', -1)">&#10094;</button>
+                        <video class="lazy" data-src="./video/Failure Cases of Non-autoregressive Simulation/0.mp4" preload="none" muted autoplay loop playsinline></video>
+                        <button class="carousel-btn right" onclick="moveCarousel('Failure Cases of Non-autoregressive Simulation', 1)">&#10095;</button>
                         <div class="slide-counter">1 / 3</div>
                     </div>
 
-                    <div class="carousel-dots" id="carousel-dots-Failure Cases of Non-autoregressive Design">
-                        <button class="carousel-dot active" onclick="setCarouselIndex('Failure Cases of Non-autoregressive Design', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('Failure Cases of Non-autoregressive Design', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('Failure Cases of Non-autoregressive Design', 2)" aria-label="Slide 3"></button>
+                    <div class="carousel-dots" id="carousel-dots-Failure Cases of Non-autoregressive Simulation">
+                        <button class="carousel-dot active" onclick="setCarouselIndex('Failure Cases of Non-autoregressive Simulation', 0)" aria-label="Slide 1"></button><button class="carousel-dot" onclick="setCarouselIndex('Failure Cases of Non-autoregressive Simulation', 1)" aria-label="Slide 2"></button><button class="carousel-dot" onclick="setCarouselIndex('Failure Cases of Non-autoregressive Simulation', 2)" aria-label="Slide 3"></button>
                     </div>
                     
                     <div class="overview-action">
-                        <button class="btn-view-all" onclick="navigateToDataset('Failure Cases of Non-autoregressive Design')">View Full Examples &rarr;</button>
+                        <button class="btn-view-all" onclick="navigateToDataset('Failure Cases of Non-autoregressive Simulation')">View Full Examples &rarr;</button>
                     </div>
                 </div>
                 
@@ -946,7 +1144,9 @@ Ultimately, our results suggest that while video DiTs possess a high potential f
                         <h4 class="level-3-header">Failure Cases of Autoregressive Simulation</h4>
                     </div>
                     
-                    <div class="overview-desc"></div>
+                    <div class="overview-desc">
+    In autoregressive simulation, mistakes in intermediate generation steps propagate across subsequent steps. Once a specific gear is assigned an incorrect movements, later steps inherit and amplify the error.
+    </div>
                     
                     <div class="carousel-wrapper" id="carousel-Failure Cases of Autoregressive Simulation">
                         <button class="carousel-btn left" onclick="moveCarousel('Failure Cases of Autoregressive Simulation', -1)">&#10094;</button>
@@ -964,6 +1164,101 @@ Ultimately, our results suggest that while video DiTs possess a high potential f
                     </div>
                 </div>
                 
+                    <div class="overview-section" id="section-Generalization to Unseen Complexity">
+                        
+                        <div class="overview-section-header">
+                            <h4 class="level-3-header">Generalization to Unseen Complexity</h4>
+                        </div>
+                        
+                        <div class="overview-desc">
+    <div>
+    <p>
+        We measure zero-shot generalization by training on a maximum gear count and evaluating on larger mechanisms. Performance drops when inference complexity exceeds training complexity for both NAR and AR, indicating limited length generalization in gear-chain reasoning.
+    </p>
+    <div class="table-wrap">
+        <table class="latex-table heatmap-generalization">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Metric:</th>
+                    <th colspan="4" class="center cmid">Non-autoregressive</th>
+                    <th colspan="4" class="center cmid sep-left">Autoregressive</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>E<sup>GT</sup><sub>kine</sub> &darr;</th>
+                    <th colspan="4" class="center">Inference</th>
+                    <th colspan="4" class="center sep-left">Inference</th>
+                </tr>
+                <tr class="headrule">
+                    <th></th>
+                    <th></th>
+                    <th>5 Gears</th>
+                    <th>10 Gears</th>
+                    <th>15 Gears</th>
+                    <th>20 Gears</th>
+                    <th class="sep-left">5 Gears</th>
+                    <th>10 Gears</th>
+                    <th>15 Gears</th>
+                    <th>20 Gears</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="midrule">
+                    <th rowspan="4" class="vlabel">Train</th>
+                    <th scope="row">5 Gears</th>
+                    <td data-group="nar" data-value="0.0496">0.0496</td>
+                    <td data-group="nar" data-value="0.2481">0.2481</td>
+                    <td data-group="nar" data-value="0.4025">0.4025</td>
+                    <td data-group="nar" data-value="0.7964">0.7964</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0661">0.0661</td>
+                    <td data-group="ar" data-value="0.0584">0.0584</td>
+                    <td data-group="ar" data-value="0.1360">0.1360</td>
+                    <td data-group="ar" data-value="0.2383">0.2383</td>
+                </tr>
+                <tr>
+                    <th scope="row">10 Gears</th>
+                    <td data-group="nar" data-value="0.0534">0.0534</td>
+                    <td data-group="nar" data-value="0.1349">0.1349</td>
+                    <td data-group="nar" data-value="0.2103">0.2103</td>
+                    <td data-group="nar" data-value="0.3461">0.3461</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0758">0.0758</td>
+                    <td data-group="ar" data-value="0.1101">0.1101</td>
+                    <td data-group="ar" data-value="0.2137">0.2137</td>
+                    <td data-group="ar" data-value="0.2950">0.2950</td>
+                </tr>
+                <tr>
+                    <th scope="row">15 Gears</th>
+                    <td data-group="nar" data-value="0.0459">0.0459</td>
+                    <td data-group="nar" data-value="0.0562">0.0562</td>
+                    <td data-group="nar" data-value="0.1046">0.1046</td>
+                    <td data-group="nar" data-value="0.1676">0.1676</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0983">0.0983</td>
+                    <td data-group="ar" data-value="0.1108">0.1108</td>
+                    <td data-group="ar" data-value="0.1360">0.1360</td>
+                    <td data-group="ar" data-value="0.3076">0.3076</td>
+                </tr>
+                <tr>
+                    <th scope="row">20 Gears</th>
+                    <td data-group="nar" data-value="0.0512">0.0512</td>
+                    <td data-group="nar" data-value="0.0607">0.0607</td>
+                    <td data-group="nar" data-value="0.1853">0.1853</td>
+                    <td data-group="nar" data-value="0.1829">0.1829</td>
+                    <td class="sep-left" data-group="ar" data-value="0.0916">0.0916</td>
+                    <td data-group="ar" data-value="0.0758">0.0758</td>
+                    <td data-group="ar" data-value="0.1185">0.1185</td>
+                    <td data-group="ar" data-value="0.1945">0.1945</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-note">
+        Zero-shot generalization across mechanism complexity. We report E<sup>GT</sup><sub>kine</sub> for models trained on a maximum gear count and evaluated at different inference counts.
+    </div>
+    </div>
+    </div>
+                    </div>
+                    
         <div class="hierarchy-bar level-1-header">
             Study 2: Designing Gear Systems (Sec 5)
         </div>
