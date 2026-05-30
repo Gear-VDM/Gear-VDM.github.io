@@ -138,26 +138,26 @@ DATASET_DESCRIPTIONS = {
     """,
     "Non-autoregressive Simulation": """
     The non-autoregressive formulation animates the entire gear mechanism simultaneously in a single generation process. 
-    This setting evaluates whether a single generation process is sufficient for the VDM to reason about long-range kinematic dependencies across the interacting gear chains.
+    This setting evaluates whether a single generation process is sufficient for the VDM to reason about kinematic dependencies across the long-range interacting gear chains.
     """,
     "Autoregressive Simulation": """
-    The autoregressive formulation animates the system through an iterative generative process. 
+    The autoregressive formulation animates the system through an iterative generative process (i.e. reasoning steps). 
     In each generation process, the model only animates gears adjacent to those whose motion has already been determined, progressively determining the motions.
     """,
     "Study 2: Designing Gear Systems (Sec 5)": """
     <div>
     <p>
-        In the design task, the model is conditioned solely on a video of a single driving gear and must synthesize a complete, functional mechanism. 
+        In the design task, the model is conditioned solely on a video of a single driving gear and must synthesize a functional multi-gear system. 
         We evaluate whether the VDM can learn to generate gear systems that form a valid tree topology while satisfying kinematic constraints. 
         Similar to Study 1, we compare the performance of non-autoregressive and autoregressive formulations.
     </p>
     </div>
     """,
     "Non-autoregressive Design": """
-    The non-autoregressive formulation synthesizes the entire multi-gear system simultaneously in a single generation pass.
+    The non-autoregressive design synthesizes the entire multi-gear system simultaneously in a single generation process.
     """,
     "Autoregressive Design": """
-    The autoregressive formulation constructs the mechanism iteratively, adding a new gear that meshes with the existing system at each step.
+    The autoregressive design progressively constructs the mechanism, adding a new gear that meshes with the existing system at each step.
     """,
 }
 
