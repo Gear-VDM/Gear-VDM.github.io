@@ -295,7 +295,7 @@ DATASET_DESCRIPTIONS = {
     <p>
         We evaluate zero-shot generalization to unseen gear counts by training and testing on differing numbers of gears. 
         When the complexity at inference exceeds that of the training set, performance degrades unpredictably for both non-autoregressive and autoregressive simulations. 
-        This drop highlights the necessity of aligning training data distribution with expected inference complexity to guarantee robust performance.
+        This drop suggests that the model does not necessarily learn fully generalizable reasoning capabilities, highlighting the necessity of aligning the training data distribution with expected inference complexity to guarantee robust performance.
     </p>
     <div class="table-wrap">
         <table class="latex-table heatmap-generalization">
