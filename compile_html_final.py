@@ -79,6 +79,7 @@ SIDEBAR_CONFIG = [
         "Autoregressive Simulation",
         ("Non-autoregressive vs Autoregressive Simulation", [
             "Quantitative Comparisons",
+            "Per-sample Kinematic Alignment Error",
             "Failure Cases of Non-autoregressive Simulation",
             "Failure Cases of Autoregressive Simulation",
             "Generalization to Unseen Complexity",
@@ -93,30 +94,6 @@ SIDEBAR_CONFIG = [
     ("Conclusions: ", []),
 ]
 
-"""
-SIDEBAR_CONFIG = [
-    ("Ablation Study", [
-        ("Model Design",
-         ["Ablation Study on Model Design",
-          "PCA Analysis on Point-track Embeddings",
-          ]
-        ),
-        ("Dataset",
-         [
-             "Dataset Visualization",
-             "Ablation Study on Dataset",
-         ]
-        ),
-        ("Reference Frames",
-             [
-                "Ablation Study on Keyframes",
-                "Ablation Study on Non-keyframes",
-             ]
-        ),
-        "Iterative Point-track Resampling",
-    ])
-]
-"""
 
 DATASET_DESCRIPTIONS = {
     # --- DATASETS (Bottom Level) ---
@@ -265,8 +242,21 @@ DATASET_DESCRIPTIONS = {
     <div class="table-note">
         Performance Comparison of Non-Autoregressive and Autoregressive Formulations trained and inference on the specific number of gears. Lower values indicate better performance.
     </div>
+    </div>
+    """,
+    "Per-sample Kinematic Alignment Error": """
+    <div>
     <p>
-        Failure cases differ by formulation: Non-autoregressive simulation errors typically flip rotational parity for a subgraph of connected gears, while Autoregressive errors often compound after a mistaken intermediate step.
+        We plot the per-sample kinematic alignment error (E<sup>GT</sup><sub>kine</sub>) for a 20-gear system, comparing non-autoregressive and autoregressive simulations.
+        Each point corresponds to one sample (x-axis is the sample index); lower values indicate closer agreement with the ground-truth kinematics.
+    </p>
+    <div style="width: 100%; text-align: center;">
+        <img src="data/Per-sample%20Kinematic%20Alignment%20Error/per_sample_kinematic_tracking_error_symlog.png" alt="Per-sample kinematic alignment error for a 20-gear system." style="max-width: 100%; height: auto;">
+    </div>
+    <p>
+        Most samples cluster near low error, but both formulations exhibit rare catastrophic failures that create sharp spikes.
+        The failure modes differ: non-autoregressive runs often flip rotational parity for a connected subgraph, while autoregressive runs can accumulate mistakes after an early incorrect step.
+        Autoregressive simulation also shows a slightly higher baseline error, consistent with compounding deviations even when no outright failure occurs.
     </p>
     </div>
     """,
