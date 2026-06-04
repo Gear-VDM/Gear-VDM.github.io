@@ -84,6 +84,7 @@ SIDEBAR_CONFIG = [
             "Failure Cases of Autoregressive Simulation",
             "Generalization to Unseen Complexity",
         ]),
+        "PCA Visualization",
     ]),
     ("Study 2: Designing Gear Systems (Sec 5)", [
         "Non-autoregressive Design",
@@ -368,7 +369,30 @@ DATASET_DESCRIPTIONS = {
         Zero-shot generalization across mechanism complexity. We report E<sup>GT</sup><sub>kine</sub> for models trained on a maximum gear count and evaluated at different inference counts.
     </div>
     </div>
-    """
+    """,
+
+    
+    "PCA Visualization": """
+    <div>
+    <p>
+        While we have observed that video diffusion transformers (DiTs) can simulate gear systems with high success rates after minimal fine-tuning, 
+        an important question arises: how do these models reason about complex kinematic dependencies? 
+        To investigate this, we PCA-visualize the self-attention maps of video diffusion transformers fine-tuned for non-autoregressive simulation task, trained on 20 gear systems.
+    </p>
+    <div style="width: 100%; text-align: center;">
+        <img src="PCA.png" alt="PCA visualization of feature maps." style="max-width: 100%; height: auto;">
+    </div>
+    <p>
+        As visualized above, layer 6 − 21 reveal a form of recursive propagation of signals originating from the driving
+        gear and spreading to its neighbors. 
+        In layer 25, the internal feature maps distinguish gears by its rotational parity.
+        This empirical evidence suggests that the transformer layers may be executing a learned, recursive graph algorithm to 
+        determine the kinematic state of each component. 
+        While we do not claim that diffusion transformers universally converge to such mechanisms, these observations 
+        highlight their practical capacity to learn algorithmic reasoning from video data without explicitly being taught to perform such reasoning steps.
+    </p>
+    </div>
+    """,
 }
 
 # --- HTML Template ---
