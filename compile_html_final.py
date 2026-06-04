@@ -389,7 +389,7 @@ DATASET_DESCRIPTIONS = {
         This empirical evidence suggests that the transformer layers may be executing a learned, recursive graph algorithm to 
         determine the kinematic state of each component. 
         While we do not claim that diffusion transformers always converge to such algorithmic solutions, these observations 
-        highlight their practical capacity to learn algorithmic reasoning from video data without explicitly being taught to perform such reasoning steps.
+        highlight their ability to learn algorithmic reasoning from video data without explicitly being taught to perform such reasoning steps.
     </p>
     </div>
     """,
