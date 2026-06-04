@@ -84,13 +84,15 @@ SIDEBAR_CONFIG = [
             "Failure Cases of Autoregressive Simulation",
             "Generalization to Unseen Complexity",
         ]),
-        "PCA Visualization",
+        "PCA Analysis",
     ]),
     ("Study 2: Designing Gear Systems (Sec 5)", [
         "Non-autoregressive Design",
         "Autoregressive Design",
-        "(Ablation) Results of non-autoregressive design with default time schedule",
-        "(Ablation) Results of autoregressive design with default time schedule",
+        ("Ablation: Default training noise schedule", [
+            "Ablation: Non-autoregressive Design",
+            "Ablation: Autoregressive Design"
+        ]),
     ]),
     ("Conclusions: ", []),
 ]
@@ -372,7 +374,7 @@ DATASET_DESCRIPTIONS = {
     """,
 
     
-    "PCA Visualization": """
+    "PCA Analysis": """
     <div>
     <p>
         While we have observed that video diffusion transformers (DiTs) can simulate gear systems with high success rates after minimal fine-tuning, 
@@ -393,6 +395,25 @@ DATASET_DESCRIPTIONS = {
     </p>
     </div>
     """,
+    "Ablation: Default training noise schedule": """
+    <div>
+        <p>
+        In this design task, we have observed that naively fine-tuned DiTs struggle to produce valid topological layouts, often generating gears detached from others.
+        The key reasons behind this is that the generation of layout is determined during the extremely high-noise regime (>= 0.98) of the flow path, a phase often overlooked by standard training noise-schedules.
+        </p>
+        <div style="width: 100%; text-align: center;">
+            <img src="noise_schedule.png" alt="Noise schedule" style="max-width: 100%; height: auto;">
+            <div class="table-note"><b>The role of noise levels across the generation process.</b> <i>Graph:</i> Visualization of how the contribution of each potential gear configuration (each configuration is represented as a line) changes across different noise levels &sigma; within a single generation process. <i>Overlayed image:</i> Gear configurations whose contributions converges to 0 at each noise-level &sigma;. Our analysis reveals that the model already "locks in" specific spatial layouts at &sigma; = 0.98, with only minor refinements occurring afterwards.</div>
+        </div>
+        As will be shown below, by simply adjusting the training noise schedule to focus on those extremely high-noise regimes, we observe drastic improvements in the model's ability to generate valid topologies.    
+    </div>
+    """,
+    "Ablation: Non-autoregressive Design":"""
+    When the model is trained with the default noise schedule, the model struggles to learn to generate the correct topological layout.
+    """,
+    "Ablation: Autoregressive Design": """
+    Surprisingly, even in the autoregressive setting, where the task is simplified to generating only a single gear at a time condition on the existing layout, the model trained on the the default noise schedule still struggles to generate gears that are properly attached to the existing system. 
+    """
 }
 
 # --- HTML Template ---
