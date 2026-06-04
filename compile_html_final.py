@@ -388,7 +388,7 @@ DATASET_DESCRIPTIONS = {
         In layer 25, the internal feature maps distinguish gears by its rotational parity.
         This empirical evidence suggests that the transformer layers may be executing a learned, recursive graph algorithm to 
         determine the kinematic state of each component. 
-        While we do not claim that diffusion transformers universally converge to such mechanisms, these observations 
+        While we do not claim that diffusion transformers always converge to such algorithmic solutions, these observations 
         highlight their practical capacity to learn algorithmic reasoning from video data without explicitly being taught to perform such reasoning steps.
     </p>
     </div>
