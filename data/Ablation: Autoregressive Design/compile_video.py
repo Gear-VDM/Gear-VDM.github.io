@@ -201,4 +201,5 @@ if __name__ == "__main__":
     os.makedirs(output_dir, exist_ok=True)
 
     for idx, example in tqdm(enumerate(examples), desc="Processing Examples"):
-        visualize(example, output_path = os.path.join(output_dir, f"{idx}.mp4"))
+        if not os.path.exists(os.path.join(output_dir, f"{idx}.mp4")):
+            visualize(example, output_path = os.path.join(output_dir, f"{idx}.mp4"))
