@@ -91,7 +91,8 @@ SIDEBAR_CONFIG = [
         "Autoregressive Design",
         ("Ablation: Default training noise schedule", [
             "Ablation: Non-autoregressive Design",
-            "Ablation: Autoregressive Design"
+            "Ablation: Autoregressive Design",
+            "Quantitative Analysis"
         ]),
     ]),
     ("Conclusions: ", []),
@@ -413,6 +414,49 @@ DATASET_DESCRIPTIONS = {
     """,
     "Ablation: Autoregressive Design": """
     Surprisingly, even in the autoregressive setting, where the task is simplified to generating only a single gear at a time condition on the existing layout, the model trained on the the default noise schedule still struggles to generate gears that are properly attached to the existing system. 
+    """,
+    "Quantitative Analysis": """
+    <div>
+    <p>
+        Consistent with the visual results shown above, we quantitatively demonstrate that our schedule achieves a substantial reduction in topological error for both non-autoregressive and autoregressive settings.
+    </p>
+    <div class="table-wrap">
+        <table class="latex-table">
+            <thead>
+                <tr>
+                    <th rowspan="2">Schedule</th>
+                    <th colspan="2" class="center cmid">Non-autoregressive (NAR)</th>
+                    <th colspan="2" class="center cmid">Autoregressive (AR)</th>
+                </tr>
+                <tr class="headrule">
+                    <th>E<sub>topo</sub> &darr;</th>
+                    <th>E<sub>kine</sub> &darr;</th>
+                    <th>E<sub>topo</sub> &darr;</th>
+                    <th>E<sub>kine</sub> &darr;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="midrule">
+                    <th scope="row">Original Schedule</th>
+                    <td data-value="0.1306">0.1306</td>
+                    <td data-value="0.1877">0.1877</td>
+                    <td data-value="0.1385">0.1385</td>
+                    <td data-value="0.1695">0.1695</td>
+                </tr>
+                <tr class="midrule">
+                    <th scope="row">Our Schedule</th>
+                    <td data-value="0.0794"><b>0.0794</b></td>
+                    <td data-value="0.1808"><b>0.1808</b></td>
+                    <td data-value="0.0736"><b>0.0736</b></td>
+                    <td data-value="0.1139"><b>0.1139</b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-note">
+        We compare topological and kinematic errors with and without our schedule. All models are trained to generate up to 20 gears. Lower values indicate better performance.
+    </div>
+    </div>
     """
 }
 
