@@ -1,0 +1,213 @@
+"""
+python compile_video.py
+"""
+
+import os
+import sys
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from tqdm import tqdm
+
+sys.path.append("./../../")
+import stack_videos
+import concurrent.futures
+import uuid
+from pathlib import Path
+
+# Handle MoviePy for generating the white spacer video if needed
+try:
+    # Modern MoviePy (v2.x+) approach: everything is at the top level
+    from moviepy import ColorClip, VideoFileClip, concatenate_videoclips
+except ImportError:
+    try:
+        # Legacy MoviePy (v1.x) preferred approach
+        from moviepy.editor import ColorClip, VideoFileClip, concatenate_videoclips
+    except ImportError:
+        # Legacy MoviePy (v1.x) explicit submodule fallback
+        from moviepy.video.VideoClip import ColorClip
+        from moviepy.video.io.VideoFileClip import VideoFileClip
+        from moviepy.video.compositing.concatenate import concatenate_videoclips
+
+# Visualizer borrowed from reference code
+try:
+    from moviepy.editor import ImageSequenceClip
+except ImportError:
+    from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
+
+#################### Good examples ##############################
+#Auto
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parents[1]
+SAMPLE_DIR = SCRIPT_DIR / "sample_100_00019"
+
+good_examples = [
+    SAMPLE_DIR / "step_000_sigma1.000000_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_016_sigma0.995196_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_020_sigma0.993185_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_022_sigma0.991961_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_023_sigma0.991280_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_024_sigma0.990546_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_025_sigma0.989753_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_030_sigma0.984574_one_step_prediction.mp4",
+    SAMPLE_DIR / "step_049_sigma0.230947_one_step_prediction.mp4",
+]
+
+examples = []
+for i in range(3):
+    row = []
+    for j in range(3):
+        idx = i * 3 + j
+        video_path = good_examples[idx]
+        if not video_path.exists():
+            raise FileNotFoundError(f"Missing example video: {video_path}")
+
+        step = video_path.name.split("_")[1]
+        sigma = video_path.name.split("_")[2].replace("sigma", "")
+        row.append((f"Sigma {sigma}", str(video_path)))
+    examples.append(row)
+
+BASE_FPS = 15
+SPEED_FACTOR = 1.0  # >1.0 speeds up, <1.0 slows down
+SEQUENCE_BY_ROW = False  # Keep the 3 x 3 examples as one grid.
+
+def get_white_video(output_path, width=832, height=480, duration=1.0, fps=15):
+    """Generates a white video to be used as padding."""
+    if os.path.exists(output_path):
+        return output_path
+    
+    try:
+        clip = ColorClip(size=(width, height), color=(255, 255, 255), duration=duration)
+        clip.write_videofile(output_path, codec="libx264", fps=fps, audio=False, logger=None)
+        return output_path
+    except Exception as e:
+        print(f"Failed to create white video: {e}")
+        return None
+
+def _is_cell(obj):
+    if not isinstance(obj, (tuple, list)) or len(obj) != 2:
+        return False
+    name, path = obj
+    if not isinstance(name, str):
+        return False
+    return isinstance(path, (str, bytes, os.PathLike)) or path is None
+
+def _is_row(obj):
+    if not isinstance(obj, list):
+        return False
+    if len(obj) == 0:
+        return True
+    return _is_cell(obj[0])
+
+def _is_grid(obj):
+    if not isinstance(obj, list):
+        return False
+    if len(obj) == 0:
+        return True
+    return _is_row(obj[0])
+
+def _collect_grids(obj, sequence_by_row=False):
+    if _is_grid(obj):
+        if sequence_by_row and len(obj) > 0:
+            return [[row] for row in obj]
+        return [obj]
+    if isinstance(obj, list):
+        grids = []
+        for item in obj:
+            grids.extend(_collect_grids(item, sequence_by_row=sequence_by_row))
+        return grids
+    return []
+
+def concat_videos(input_paths, output_path, default_fps=15):
+    if not input_paths:
+        return None
+
+    clips = []
+    final_clip = None
+    try:
+        for path in input_paths:
+            clips.append(VideoFileClip(path))
+
+        fps = getattr(clips[0], "fps", None) or default_fps
+        final_clip = concatenate_videoclips(clips, method="compose")
+        final_clip.write_videofile(output_path, codec="libx264", fps=fps, audio=False, logger=None)
+        return output_path
+    except Exception as e:
+        print(f"Failed to concatenate videos: {e}")
+        return None
+    finally:
+        if final_clip is not None:
+            try:
+                final_clip.close()
+            except Exception:
+                pass
+        for clip in clips:
+            try:
+                clip.close()
+            except Exception:
+                pass
+
+def visualize(grid_inputs, output_path):
+    if not grid_inputs:
+        return None
+
+    grid_sequence = _collect_grids(grid_inputs, sequence_by_row=SEQUENCE_BY_ROW)
+    if not grid_sequence:
+        print("No valid grids found in inputs.")
+        return None
+
+    target_fps = max(BASE_FPS * SPEED_FACTOR, 1)
+
+    # --- Step 6: Stack Videos ---
+    try:
+        # --- NEW CODE: Define borders (RGB format) ---
+        border_cfg = {
+            "Driving Gear": (0, 0, 255), # Blue border
+            "Non-Auto": (128, 128, 128),  # Gray border
+            "Auto (": (255, 0, 0),  # Red border
+            "Sigma": (255, 0, 0),
+        }
+        
+        # Pass the border_colors argument to the stacker
+        if len(grid_sequence) == 1:
+            stack_videos.stack_videos(
+                grid_sequence[0],
+                output_path,
+                border_colors=border_cfg,
+                target_fps=target_fps,
+            )
+            return output_path
+
+        temp_paths = []
+        base, _ = os.path.splitext(output_path)
+        for seq_idx, grid in enumerate(grid_sequence):
+            temp_path = f"{base}_part{seq_idx:03d}.mp4"
+            stack_videos.stack_videos(
+                grid,
+                temp_path,
+                border_colors=border_cfg,
+                target_fps=target_fps,
+            )
+            if not os.path.exists(temp_path):
+                print(f"Missing segment output: {temp_path}")
+                return None
+            temp_paths.append(temp_path)
+
+        concat_videos(temp_paths, output_path, default_fps=target_fps)
+
+        for temp_path in temp_paths:
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+
+        # ---------------------------------------------
+        return output_path
+    except Exception as e:
+        print(f"Error in stack_videos: {e}")
+        return None
+
+if __name__ == "__main__":
+    output_path = PROJECT_ROOT / "one_step_pred.mp4"
+    visualize(examples, output_path=str(output_path))
