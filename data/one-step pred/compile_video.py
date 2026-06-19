@@ -163,10 +163,8 @@ def visualize(grid_inputs, output_path):
     try:
         # --- NEW CODE: Define borders (RGB format) ---
         border_cfg = {
-            "Driving Gear": (0, 0, 255), # Blue border
-            "Non-Auto": (128, 128, 128),  # Gray border
-            "Auto (": (255, 0, 0),  # Red border
-            "Sigma": (255, 0, 0),
+            "Sigma 1.000": (0, 0, 255), # Blue border
+            "Sigma 0.9845": (255, 0, 0), # Red border
         }
         
         # Pass the border_colors argument to the stacker

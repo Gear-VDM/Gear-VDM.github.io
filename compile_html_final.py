@@ -409,7 +409,7 @@ DATASET_DESCRIPTIONS = {
         </div>
         <div style="width: 100%; text-align: center; margin-top: 1.5em;">
             <video src="one_step_pred.mp4" autoplay loop muted playsinline controls style="max-width: 100%; height: auto;"></video>
-            <div class="table-note"><sup>*</sup> <b>One-step predictions during the simulated denoising process in autoregressive design task.</b> Visualizations of the one-step prediction across the analytically constructed flow path. By &sigma; = 0.98, the model has already committed to a specific spatial layout.</div>
+            <div class="table-note"><b>One-step predictions during the simulated denoising process in autoregressive design task.</b> Visualizations of the one-step prediction across the analytically constructed flow path. By &sigma; = 0.98, the model has already committed to a specific spatial layout.</div>
         </div>
         As will be shown below, by simply adjusting the training noise schedule to focus on those extremely high-noise regimes, we observe drastic improvements in the model's ability to generate valid topologies.    
     </div>
