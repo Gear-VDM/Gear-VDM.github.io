@@ -37,7 +37,7 @@ except ImportError:
 
 #################### Good examples ##############################
 #Auto
-good_examples = [(58, 20), (47, 20), (14, 20), (19, 20), (26, 20), (42, 20), (97, 20)]
+good_examples = [(47, 20), (14, 20), (19, 20), (26, 20), (42, 20), (97, 20)]
 
 examples = []
 auto_path = "/work/koichi/Gear/gear_gen_angle_rad_con_auto/eval_results/Gen_20/Gear_Gen_Angle_Rad_Con_HighNoiseAutoGen_Gear5_098_12000_Low5OnesidedWeight_12000_shift1_1.0_step32b/"
@@ -52,8 +52,8 @@ for (g, loop_max) in good_examples:
         else:
             example = [
                 ("Driving Gear (Condition)", os.path.join(vis_path, "vis", f"{g}_loop_0_input_modality_0.mp4")),
-                (f"Non-Auto", os.path.join(nonauto_path, "results", f"{g}_loop_0_modality_0.mp4")),
-                (f"Auto (Step {loop + 1})", os.path.join(auto_path, "results", f"{g}_loop_{loop}_modality_0.mp4")),
+                (f"Non-Autoregressive", os.path.join(nonauto_path, "results", f"{g}_loop_0_modality_0.mp4")),
+                (f"Autoregressive (Step {loop + 1})", os.path.join(auto_path, "results", f"{g}_loop_{loop}_modality_0.mp4")),
             ]
         lis.append([example])
     examples.append(lis)
