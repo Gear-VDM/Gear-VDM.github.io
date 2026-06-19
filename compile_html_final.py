@@ -94,6 +94,7 @@ SIDEBAR_CONFIG = [
             "Ablation: Autoregressive Design",
             "Quantitative Analysis"
         ]),
+        "Non-autoregressive vs Autoregressive Design",
     ]),
     ("Conclusions: ", []),
 ]
@@ -456,6 +457,16 @@ DATASET_DESCRIPTIONS = {
     <div class="table-note">
         We compare topological and kinematic errors with and without our schedule. All models are trained to generate up to 20 gears. Lower values indicate better performance.
     </div>
+    </div>
+    """,
+    "Non-autoregressive vs Autoregressive Design": """
+    <div>
+    <p>
+        Finally, we examine the performance gap between non-autoregressive and autoregressive models. 
+        As illustrated below, non-autoregressive models generally produce gear systems with valid topologies and consistent kinematic relationships. 
+        This observation is further supported by the quantitative results presented in the table above. 
+        We hypothesize that decomposing the generation tasks into a sequential process of synthesizing individual gears enables the model to better capture local topological and kinematic constraints, leading to improved overall system validity.
+    </p>
     </div>
     """
 }
