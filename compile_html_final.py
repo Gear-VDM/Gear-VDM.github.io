@@ -462,10 +462,9 @@ DATASET_DESCRIPTIONS = {
     "Non-autoregressive vs Autoregressive Design": """
     <div>
     <p>
-        Finally, we examine the performance gap between non-autoregressive and autoregressive models. 
-        As illustrated below, non-autoregressive models generally produce gear systems with valid topologies and consistent kinematic relationships. 
-        This observation is further supported by the quantitative results presented in the table above. 
-        We hypothesize that decomposing the generation tasks into a sequential process of synthesizing individual gears enables the model to better capture local topological and kinematic constraints, leading to improved overall system validity.
+        Finally, we evaluate the performance gap between non-autoregressive and autoregressive models. 
+        The qualitative examples below and quantitative results in the table above demonstrate that autoregressive models demonstrate a much higher frequency of generating valid topologies and kinematic relationships. 
+        This advantage likely stems from the sequential nature of the autoregressive approach, which breaks down complex system generation into manageable, step-by-step gear synthesis for the DiT backbone.
     </p>
     </div>
     """
